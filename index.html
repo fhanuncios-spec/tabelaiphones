@@ -1,0 +1,943 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Lista Apple • MANGA & ImportTech</title>
+
+  <style>
+    :root{
+      --bg:#f5f5f7;
+      --card: rgba(255,255,255,.86);
+      --stroke: rgba(0,0,0,.08);
+      --text:#1d1d1f;
+      --muted: rgba(29,29,31,.65);
+      --radius:18px;
+
+      --blue:#0a84ff;
+      --purple:#5856d6;
+      --green:#34c759;
+
+      --btnBg: rgba(10,132,255,.10);
+      --btnStroke: rgba(10,132,255,.25);
+
+      --black:#0b0b0f;
+      --manga:#0b3d1a;     /* verde escuro */
+      --tech:#0a84ff;      /* azul */
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(10,132,255,.12), transparent 60%),
+        radial-gradient(1200px 600px at 80% 0%, rgba(88,86,214,.14), transparent 55%),
+        var(--bg);
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    header{
+      position:sticky;top:0;z-index:50;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: rgba(245,245,247,.78);
+      border-bottom:1px solid var(--stroke);
+    }
+    .header-inner{
+      max-width:1100px;margin:0 auto;
+      padding:14px 14px;
+      display:flex;align-items:flex-end;justify-content:space-between;gap:12px;
+    }
+    .title{display:flex;flex-direction:column;gap:4px}
+    .title h1{
+      margin:0;font-size:18px;letter-spacing:-.2px;line-height:1.1;
+      background: linear-gradient(90deg,var(--blue),var(--purple));
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+    }
+    .title small{color:var(--muted);font-size:12px}
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 12px;border-radius:999px;
+      background: rgba(255,255,255,.84);
+      border:1px solid var(--stroke);
+      box-shadow: 0 6px 18px rgba(0,0,0,.06);
+      white-space:nowrap;font-size:12px;color:var(--muted);
+    }
+
+    .wrap{max-width:1100px;margin:0 auto;padding:18px 14px 42px;}
+    .block{
+      border:1px solid var(--stroke);
+      border-radius: 22px;
+      background: rgba(255,255,255,.55);
+      box-shadow: 0 10px 28px rgba(0,0,0,.06);
+      overflow:hidden;
+      margin: 14px 0;
+    }
+
+    /* ✅ Fundo preto na parte do topo do bloco */
+    .block-head{
+      padding:14px 14px;
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      background: var(--black);
+      color: #fff;
+    }
+
+    .block-left{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    /* ✅ “título” como badge */
+    .store-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-weight: 850;
+      letter-spacing: -.2px;
+      font-size: 13px;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.14);
+      white-space:nowrap;
+    }
+    .store-badge.manga{ background: var(--manga); }
+    .store-badge.tech{ background: var(--tech); }
+
+    .block-sub{
+      font-size:12px;
+      color: rgba(255,255,255,.75);
+      padding: 6px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      white-space:nowrap;
+    }
+
+    .section{padding: 2px 12px 14px;}
+    .section-head{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      margin: 14px 2px 10px;
+    }
+    .section-head h3{
+      margin:0;font-size:15px;letter-spacing:-.2px;
+    }
+    .h3-blue{color:var(--blue)}
+    .h3-green{color:var(--green)}
+    .count{
+      color:var(--muted);font-size:12px;
+      padding:6px 10px;border-radius:999px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.65);
+    }
+
+    details.cat{
+      border:1px solid var(--stroke);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.55);
+      overflow:hidden;
+      margin-bottom: 10px;
+    }
+    details.cat > summary{
+      list-style:none;cursor:pointer;
+      padding: 12px 12px;
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+    }
+    details.cat > summary::-webkit-details-marker{display:none}
+    .cat-left{display:flex;flex-direction:column;gap:2px}
+    .cat-title{margin:0;font-size:13px;font-weight:760;letter-spacing:-.2px}
+    .cat-sub{font-size:12px;color:var(--muted)}
+
+    .line-block{padding:0 10px 10px}
+    .line-title{
+      margin: 10px 2px 8px;
+      font-size:12px;color:var(--muted);
+      letter-spacing:.2px;text-transform:uppercase;
+    }
+
+    .grid{
+      display:grid;gap:10px;
+      grid-template-columns: repeat(4, 1fr);
+    }
+    @media (max-width:560px){ .grid{grid-template-columns:repeat(2,1fr)} }
+    @media (min-width:561px) and (max-width:920px){ .grid{grid-template-columns:repeat(3,1fr)} }
+
+    .card{
+      background: var(--card);
+      border:1px solid var(--stroke);
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.06);
+      display:flex;flex-direction:column;gap:10px;
+      min-height: 154px;
+    }
+
+    .badge{
+      align-self:flex-start;
+      font-size:11px;
+      padding:6px 9px;border-radius:999px;
+      border:1px solid rgba(0,0,0,.06);
+      background: rgba(0,0,0,.04);
+      color: rgba(29,29,31,.72);
+    }
+    .badge.lacrado{
+      background: rgba(10,132,255,.10);
+      border-color: rgba(10,132,255,.22);
+      color: rgba(10,132,255,.95);
+    }
+    .badge.seminovo{
+      background: rgba(52,199,89,.12);
+      border-color: rgba(52,199,89,.22);
+      color: rgba(52,199,89,.95);
+    }
+
+    .name{margin:0;font-size:13px;font-weight:900;letter-spacing:-.15px;line-height:1.2}
+    .details{margin:0;font-size:12px;color:var(--muted);line-height:1.25;min-height:15px}
+
+    .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:-2px}
+    .chip{
+      font-size:11px;
+      padding:5px 8px;border-radius:999px;
+      background: rgba(0,0,0,.035);
+      border:1px solid rgba(0,0,0,.06);
+      color: rgba(29,29,31,.72);
+    }
+
+    .price-row{
+      margin-top:auto;
+      display:flex;align-items:flex-end;justify-content:space-between;gap:10px;
+    }
+    .price{font-weight:900;letter-spacing:-.2px;font-size:14px;white-space:nowrap}
+
+    .copy{
+      appearance:none;
+      border:1px solid var(--btnStroke);
+      background: var(--btnBg);
+      color: rgba(10,132,255,.95);
+      font-weight:900;
+      font-size:12px;
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      transition: transform .08s ease, background .2s ease;
+      white-space:nowrap;
+    }
+    .copy:hover{background: rgba(10,132,255,.14)}
+    .copy:active{transform:scale(.98)}
+
+    .foot{
+      color:var(--muted);
+      font-size:12px;
+      text-align:center;
+      padding: 14px 0 8px;
+    }
+
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      background: rgba(29,29,31,.92);
+      color:#fff;
+      font-size:12px;
+      padding: 10px 12px;
+      border-radius:999px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.25);
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .18s ease, transform .18s ease;
+    }
+    .toast.show{opacity:1; transform: translateX(-50%) translateY(-6px);}
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="header-inner">
+    <div class="title">
+      <h1>🍏 Lista Apple • MANGA & ImportTech</h1>
+      <small>Valores à vista. Parcelado em até 18x: consultar.</small>
+    </div>
+    <div class="pill" id="updatedPill">📌 Atualização: hoje</div>
+  </div>
+</header>
+
+<div class="wrap" id="app"></div>
+<div class="toast" id="toast">Mensagem copiada ✅</div>
+
+<script>
+/** =========================
+ *  1) LISTAS (ATUALIZE TODO DIA AQUI)
+ *  ========================= */
+const RAW_MANGA = String.raw`
+Confira nossa lista de aparelhos lacrados para venda abaixo:
+
+VALORES Á VISTA, PARCELADO EM ATÉ 18x CONSULTAR💳
+LISTA ATUALIZADA DIARIAMENTE❗
+
+—————————————————————
+
+IPHONE LACRADO📦
+
+**iPad**
+
+📍IPAD 11 128 * (A16) silver *R$ 3050,00*
+
+📍IPAD 11 256 * (A16) azul *R$ 3600,00*
+
+📍MAC MINI (M4) 512GB 16GB MIDNIGHT *R$ 5400,00*
+
+---
+
+**Relógios**
+
+📍APLLE WATCH SE 3 44mm preto *R$ 2600,00*
+
+📍APLLE WATCH SÉRIE 11 42mm preto *R$ 3100,00*
+
+📍APLLE WATCH SÉRIE 11 46mm preto *R$ 3400,00*
+
+---
+
+**IPHONE**
+
+📍 IPHONE 13 128gb preto CPO *R$ 3500,00*
+
+📍 IPHONE 14 128gb preto *R$ 3850,00*
+
+📍 IPHONE 16 128gb azul *R$ 4950,00*
+
+📍 IPHONE 16 256gb branco / rosa e preto *R$ 5600,00*
+
+---
+
+**Valores da linha 17 para pagamento na hora da RETIRADA**
+
+📍 IPHONE 17 pro 256gb laranja *R$ 8400,00*
+
+📍 IPHONE 17 pro 256gb azul *R$ 8600,00*
+
+📍 IPHONE 17 pro Max 256gb laranja e azul *R$ 9100,00*
+
+📍 IPHONE 17 pro Max 256gb silver *R$ 9300,00*
+
+📍 IPHONE 17 pro Max 512gb azul e laranja *R$ 11000,00*
+
+📍 IPHONE 17 pro Max 512gb silver *R$ 11200,00*
+
+PREÇOS BOA DICA (ACRÉSCIMO R$500)
+
+📍 IPHONE 15 128gb  *R$4500,00*
+
+IPHONE SEMINOVOS📱
+
+📍 iPhone 11- 128gb (UPGRADE) VERDE ( bateria 100% ) *R$ 1700,00*
+
+📍 iPhone 12 Pro Max - grade A 128gb azul ( bateria 90 a 100) *R$ 2950,00*
+
+📍 iPhone 13- 128gb grade Ab branco ( bateria 90 a 💯) *R$ 2400,00*
+
+📍 iPhone 13 Pro - 256GB (UPGRADE) preto ( bateria 100% ) *R$ 3250,00*
+
+📍 iPhone 13 Pro Max - grade A 128gb silver e gold ( bateria 90 a 100) *R$ 3400,00*
+
+📍 iPhone 14 Plus - 128gb grade Ab preto ( bateria 90 a 💯 ) *R$ 2950,00*
+
+📍 iPhone 14 Pro - 128GB (UPGRADE) DOURADO ( bateria 100% ) *R$ 3500*
+
+📍 iPhone 14 Pro Max - 128 grade A preto ( bateria 85 ) *R$ 4250,00*
+
+📍 iPhone 15 - 128gb grade A azul ( bateria 90 a 💯 ) *R$ 3600,00*
+
+📍 iPhone 15 pro - 128gb grade A natural ( bateria 90 a 💯 ) *R$ 4400,00*
+
+📍 iPhone 15 pro - 128gb grade A natural ( garantia Apple bateria 90 a 💯 ) *R$ 4500,00*
+
+📍 iPhone 17 - 256 grade A branco ( garantia Apple mês 10 bateria 💯 ) *R$ 5900,00*
+
+`;
+
+const RAW_TECH = String.raw`
+📲 12 128gb A *R$ 2.050,00*
+🖤
+
+📲 12pro 256gb A *R$ 2.500,00*
+💙🩶
+
+📲 12pro 512gb A *R$ 2.550,00*
+💙
+
+📲 12 pro max 256gb A *R$ 2.950,00*
+💙🖤
+
+📲 13 128gb A *R$ 2.550,00*
+🖤🤍🩷💙
+
+📲 13 256gb A *R$ 2.700,00*
+🖤
+
+📲 13 pro 128gb A *R$ 3.050,00*
+🤍🖤
+
+📲 13 pro 256gb A *R$ 3.150,00*
+🤍🧡
+
+📲 13 pro max 128gb A *R$ 3.450,00*
+🩶
+
+📲 13 pro max 256gb A *R$ 3.600,00*
+🧡🤍
+
+📲 14 128gb A *R$ 2.750,00*
+💜🩵
+
+📲 14 Plus 128gb A *R$ 2.950,00*
+❤️🖤💜
+
+📲 14 pro 128gb A *R$ 3.500,00*
+🖤
+
+📲 14 pro max 128gb A *R$ 3.900,00*
+💜🖤
+
+📲 14 pro max 256gb A *R$ 4.050,00*
+💜🖤
+
+📲 15 128gb A *R$ 3.500,00*
+🩷🩵
+
+📲 15 256gb A *R$ 3.650,00*
+🩷
+
+📲 15 pro 128gb A *R$ 4.150,00*
+🩶💙
+
+📲 15 pro 256gb A *R$ 4.350,00*
+🤍🩶
+
+📲 15 Plus 128gb A *R$ 3.700,00*
+🩷🖤
+
+📲 15 plus 256gb A *R$ 3.850,00*
+🩵
+
+📲 15 pro max 256gb A *R$ 5.000,00*
+🖤💙🤍
+
+📲 15 pro max 1T A *R$ 5.300,00*
+💙
+
+📱16 128gb A *R$ 4.300,00*
+🖤
+
+📲 16 plus 128gb A *R$ 4.750,00*
+🖤
+
+📲 16 pro 128gb A *R$ 5.100,00*
+🩶🤍
+
+📲 16 pro 256gb A *R$ 5.350,00*
+🧡
+
+📲 16 pro max 256gb A *R$ 6.350,00*
+🤍🧡
+
+📲 16 pro max 512gb A *R$ 6.500,00*
+🖤
+
+📲 16pro Max 1T A *R$ 6.600,00*
+🧡
+`;
+
+/** =========================
+ *  2) MENSAGENS (COPIAR)
+ *  ========================= */
+const TEMPLATE_LACRADO = (model, price, colorsTxt) => `Eu tenho o ${model} lacrado, com garantia oficial Apple! 📦
+está saindo por apenas ${price} à vista na promoção.
+
+${colorsTxt ? `🎨 Cores disponíveis: ${colorsTxt}\n\n` : ""}📦 Ele é:
+✅ Totalmente novo, lacrado na caixa original
+✅ Produto 100% original e com nota fiscal no seu nome
+✅ Vai completo com cabo, manual e tudo certinho da Apple`;
+
+const TEMPLATE_SEMINOVO = (model, price, colorsTxt) => `Eu tenho o ${model} seminovo, em perfeito estado! 📦
+está saindo por apenas ${price} à vista na promoção.
+
+${colorsTxt ? `🎨 Cores disponíveis: ${colorsTxt}\n\n` : ""}📦 Seminovos:
+✅ 6 meses de garantia pela loja
+✅ Nota fiscal no seu nome
+✅ Capa + Película + Carregador completo de brinde
+✅ Aparelho 100% original, super conservado e testado pela nossa equipe técnica`;
+
+/** =========================
+ *  3) PARSER
+ *  ========================= */
+const DEFAULT_STATUS = "LACRADOS";
+
+const EMOJI_COLOR_MAP = new Map([
+  ["🖤","preto"], ["🤍","branco"], ["💙","azul"], ["🩶","cinza"],
+  ["🩷","rosa"], ["💜","roxo"], ["🩵","azul claro"], ["❤️","vermelho"],
+  ["🧡","laranja"], ["💛","amarelo"], ["💚","verde"],
+]);
+
+function normalizeLine(s){ return (s||"").replace(/\r/g,"").trim(); }
+
+function detectStatus(line){
+  const t = line.toUpperCase();
+  if (t.includes("SEMINOVO")) return "SEMINOVOS";
+  if (t.includes("LACRADO")) return "LACRADOS";
+  return null;
+}
+
+function isCategoryLine(line){ return /^\*\*.+\*\*$/.test(line.trim()); }
+function parseCategory(line){ return line.trim().replace(/^\*\*|\*\*$/g,"").trim(); }
+
+function guessCategoryFromText(line){
+  const t = line.toUpperCase();
+  if (t.includes("IPAD")) return "iPad";
+  if (t.includes("RELÓG") || t.includes("RELOG")) return "Relógios";
+  if (t.includes("WATCH")) return "Relógios";
+  if (t.includes("MAC")) return "Mac";
+  if (t.includes("IPHONE")) return "iPhone";
+  return null;
+}
+
+function parseItemLine(line){
+  const raw = line.replace(/^(📍|📲|📱)\s*/,"").trim();
+  const priceMatch = raw.match(/\*?\s*R\$\s*[\d.]+(?:,\d{2})?\s*\*?/i);
+  const price = priceMatch ? priceMatch[0].replace(/\*/g,"").trim() : "";
+  const name = priceMatch ? raw.replace(priceMatch[0], "").replace(/\*+/g,"").trim() : raw;
+
+  const parts = name.split(" * ").map(x=>x.trim()).filter(Boolean);
+  const title = parts[0] || name;
+  const details = parts.slice(1).join(" • ");
+
+  return { title, details, price, raw: name };
+}
+
+function capitalizeBrand(s){
+  return (s || "")
+    .replace(/\bIPHONE\b/ig,"iPhone")
+    .replace(/\bIPAD\b/ig,"iPad")
+    .replace(/\bAPPLE\b/ig,"Apple")
+    .replace(/\s+/g," ")
+    .trim();
+}
+
+function extractColorsFromWords(text){
+  const t = (text || "").toLowerCase();
+  const COLORS = [
+    "preto","branco","azul","rosa","verde","vermelho","amarelo","roxo","cinza","grafite",
+    "prata","dourado","bege","laranja",
+    "silver","midnight","starlight","gold","graphite","space gray","spacegrey","natural"
+  ];
+
+  const afterStorage = t.split(/\b(64|128|256|512)\s*gb\b|\b1\s*tb\b|\b2\s*tb\b|\b1\s*t\b/).pop() || t;
+  const normalized = afterStorage.replace(/\s+/g," ").trim();
+
+  const hits = [];
+  for (const c of COLORS){
+    const needle = c.toLowerCase();
+    if (needle.includes(" ")){
+      if (normalized.includes(needle) && !hits.includes(c)) hits.push(c);
+    }else{
+      const re = new RegExp(`\\b${needle}\\b`,"i");
+      if (re.test(normalized) && !hits.includes(c)) hits.push(c);
+    }
+  }
+
+  normalized.split(/\/|,| e /i).map(s=>s.trim()).forEach(p=>{
+    if (COLORS.includes(p) && !hits.includes(p)) hits.push(p);
+  });
+
+  return hits;
+}
+
+function extractColorsFromEmojiLine(line){
+  const chars = Array.from((line || "").trim());
+  const out = [];
+  for (const ch of chars){
+    if (EMOJI_COLOR_MAP.has(ch) && !out.includes(ch)) out.push(ch);
+  }
+  return out;
+}
+
+function colorsTextForMessage(item){
+  const parts = [];
+  if (item.colorsWords && item.colorsWords.length) parts.push(item.colorsWords.join(" / "));
+  if (item.colorsEmoji && item.colorsEmoji.length){
+    const names = item.colorsEmoji.map(e=>EMOJI_COLOR_MAP.get(e)).filter(Boolean);
+    if (names.length) parts.push(names.join(" / "));
+  }
+  const merged = parts.join(" / ").split(" / ").map(s=>s.trim()).filter(Boolean);
+  const unique = [];
+  for (const m of merged){ if (!unique.includes(m)) unique.push(m); }
+  return unique.join(" / ");
+}
+
+/* ✅ Limpeza: só Modelo + Capacidade (remove grade/upgrade/bateria/garantia/CPO etc) */
+function extractCapacity(text){
+  const s = (text || "");
+  const m = s.match(/\b(64|128|256|512)\s*gb\b|\b1\s*tb\b|\b2\s*tb\b|\b1\s*t\b/i);
+  if (!m) return "";
+  let cap = m[0].toUpperCase().replace(/\s+/g,"").replace("T","TB");
+  // garante "GB"/"TB" bonitinho
+  cap = cap.replace("GB","GB").replace("TB","TB");
+  return cap;
+}
+
+function cleanModelOnly(text){
+  // remove conteúdos entre parênteses e termos indesejados
+  let s = (text || "")
+    .replace(/\(.*?\)/g," ")                 // ( bateria 100% )
+    .replace(/\bgrade\s*[a-z]+\b/ig," ")     // grade A / grade Ab
+    .replace(/\bUPGRADE\b/ig," ")
+    .replace(/\bGARANTIA\b/ig," ")
+    .replace(/\bBATERIA\b/ig," ")
+    .replace(/\bCPO\b/ig," ")
+    .replace(/\bM[EÊ]S\b/ig," ")
+    .replace(/\bNOTA\s*FISCAL\b/ig," ")
+    .replace(/[–—]/g,"-")
+    .replace(/\s+/g," ")
+    .trim();
+
+  // pega apenas o começo até a capacidade (se existir)
+  const cap = extractCapacity(s);
+  if (cap){
+    const idx = s.toUpperCase().indexOf(cap);
+    if (idx > 0) s = s.slice(0, idx).trim();
+  }
+
+  // TECH às vezes vem "12 pro max" sem iPhone
+  const up = s.toUpperCase();
+  if (!up.includes("IPHONE") && (/^\d{2}\b/.test(s) || up.startsWith("12") || up.startsWith("13") || up.startsWith("14") || up.startsWith("15") || up.startsWith("16") || up.startsWith("17"))){
+    s = `iPhone ${s}`.replace(/\s+/g," ").trim();
+  }
+
+  // normaliza casing Apple
+  s = capitalizeBrand(s);
+
+  // ajeita "Pro max" -> "Pro Max"
+  s = s.replace(/\bPRO\s+MAX\b/ig,"Pro Max")
+       .replace(/\bPRO\b/ig,"Pro")
+       .replace(/\bPLUS\b/ig,"Plus")
+       .replace(/\bMINI\b/ig,"mini");
+
+  return s;
+}
+
+function displayTitle(item){
+  const model = cleanModelOnly(item.title || item.raw);
+  const cap = extractCapacity(item.title || item.raw);
+  const colors = colorsTextForMessage(item);
+
+  const left = [model, cap].filter(Boolean).join(" • ");
+  if (colors) return `${left} • ${colors}`;
+  return left;
+}
+
+function modelForMessage(item){
+  const model = cleanModelOnly(item.title || item.raw);
+  const cap = extractCapacity(item.title || item.raw);
+  return cap ? `${model} – ${cap}` : model;
+}
+
+function lineGroupFor(title){
+  const t = (title||"").toUpperCase();
+  const n = (t.match(/\b(1[0-9])\b/) || [])[1];
+  if (!n) return "OUTROS";
+  return `LINHA ${n}`;
+}
+
+function parseList(rawText, sourceName){
+  const lines = rawText.split("\n").map(normalizeLine);
+
+  let status = DEFAULT_STATUS;
+  let category = "Geral";
+
+  const data = {};
+
+  for (let i=0; i<lines.length; i++){
+    const line = lines[i];
+    if (!line) continue;
+
+    const st = detectStatus(line);
+    if (st) status = st;
+
+    if (isCategoryLine(line)){
+      category = parseCategory(line);
+      continue;
+    }
+
+    const guessCat = guessCategoryFromText(line);
+    if (guessCat && !/^(📍|📲|📱)\s*/.test(line)){
+      category = guessCat;
+      continue;
+    }
+
+    if (line === "---" || /^[-—_]{6,}$/.test(line)) continue;
+
+    if (/^(📍|📲|📱)\s*/.test(line)){
+      const item = parseItemLine(line);
+
+      item.source = sourceName;
+      item.status = status;
+      item.category = category;
+      item.lineGroup = lineGroupFor(item.title);
+
+      item.colorsWords = extractColorsFromWords(item.raw);
+
+      let emojiColors = [];
+      const next = lines[i+1] || "";
+      if (next && extractColorsFromEmojiLine(next).length){
+        emojiColors = extractColorsFromEmojiLine(next);
+      }
+      item.colorsEmoji = emojiColors;
+
+      data[status] ??= {};
+      data[status][category] ??= [];
+      data[status][category].push(item);
+
+      continue;
+    }
+  }
+
+  return { data };
+}
+
+/** =========================
+ *  4) COPY
+ *  ========================= */
+function showToast(text){
+  const el = document.getElementById("toast");
+  el.textContent = text || "Mensagem copiada ✅";
+  el.classList.add("show");
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(()=> el.classList.remove("show"), 1400);
+}
+async function copyText(text){
+  try{
+    await navigator.clipboard.writeText(text);
+    showToast("Mensagem copiada ✅");
+  }catch(e){
+    window.prompt("Copie a mensagem:", text);
+  }
+}
+
+function buildMessage(item){
+  const model = modelForMessage(item);
+  const price = item.price || "R$ (consultar)";
+  const colorsTxt = colorsTextForMessage(item);
+
+  if (item.status === "SEMINOVOS") return TEMPLATE_SEMINOVO(model, price, colorsTxt);
+  return TEMPLATE_LACRADO(model, price, colorsTxt);
+}
+
+/** =========================
+ *  5) RENDER
+ *  ========================= */
+function escapeHtml(str){
+  return String(str || "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function formatUpdatedPill(){
+  const d = new Date();
+  const br = d.toLocaleDateString("pt-BR", { day:"2-digit", month:"2-digit", year:"numeric" });
+  document.getElementById("updatedPill").textContent = `📌 Atualização: ${br}`;
+}
+
+function countItems(block){
+  let c = 0;
+  for (const cat in block) c += block[cat].length;
+  return c;
+}
+
+function catWeight(cat){
+  const u = cat.toUpperCase();
+  if (u.includes("IPHONE")) return 1;
+  if (u.includes("RELÓG") || u.includes("RELOG")) return 2;
+  if (u.includes("IPAD")) return 3;
+  if (u.includes("MAC")) return 4;
+  return 9;
+}
+
+function cardHtml(it, key){
+  const isSemi = it.status === "SEMINOVOS";
+  const badgeText = isSemi ? "Seminovo" : "Lacrado";
+  const badgeClass = isSemi ? "seminovo" : "lacrado";
+
+  const colorsTxt = colorsTextForMessage(it);
+
+  const chips = [];
+  (it.colorsWords || []).slice(0,6).forEach(c=> chips.push(`<span class="chip">${escapeHtml(c)}</span>`));
+  (it.colorsEmoji || []).slice(0,10).forEach(e=>{
+    const name = EMOJI_COLOR_MAP.get(e);
+    chips.push(`<span class="chip">${escapeHtml(e)}${name ? " "+escapeHtml(name) : ""}</span>`);
+  });
+
+  return `
+    <article class="card">
+      <div class="badge ${badgeClass}">${badgeText}</div>
+      <h4 class="name">${escapeHtml(displayTitle(it))}</h4>
+      <p class="details">${colorsTxt ? `Cores: ${escapeHtml(colorsTxt)}` : ""}</p>
+      ${chips.length ? `<div class="chips">${chips.join("")}</div>` : ""}
+      <div class="price-row">
+        <div class="price">${escapeHtml(it.price || "Consultar")}</div>
+        <button class="copy" type="button" data-key="${escapeHtml(key)}">📋 Copiar</button>
+      </div>
+    </article>
+  `;
+}
+
+function renderBlock(container, cfg, parsed){
+  const data = parsed.data;
+  const statusOrder = ["LACRADOS","SEMINOVOS"];
+  const index = new Map();
+
+  const html = statusOrder
+    .filter(st => data[st] && Object.keys(data[st]).length)
+    .map(st=>{
+      const block = data[st];
+      const total = countItems(block);
+      const cats = Object.keys(block).sort((a,b)=>catWeight(a)-catWeight(b) || a.localeCompare(b,"pt-BR"));
+
+      const catsHtml = cats.map(cat=>{
+        const items = block[cat];
+
+        const byLine = {};
+        for (const it of items){
+          const g = it.lineGroup || "OUTROS";
+          byLine[g] ??= [];
+          byLine[g].push(it);
+        }
+        const lineKeys = Object.keys(byLine).sort((a,b)=>{
+          const na = parseInt((a.match(/\d+/)||[])[0]||"999",10);
+          const nb = parseInt((b.match(/\d+/)||[])[0]||"999",10);
+          return na - nb;
+        });
+
+        const onlyOutros = lineKeys.length === 1 && lineKeys[0] === "OUTROS";
+
+        if (!onlyOutros){
+          const linesHtml = lineKeys.map(lk=>{
+            const cards = byLine[lk].map((it,i)=>{
+              const key = `${cfg.key}::${st}::${cat}::${lk}::${i}`;
+              index.set(key, it);
+              return cardHtml(it, key);
+            }).join("");
+            return `
+              <div class="line-block">
+                <div class="line-title">${escapeHtml(lk)}</div>
+                <div class="grid">${cards}</div>
+              </div>
+            `;
+          }).join("");
+
+          return `
+            <details class="cat" open>
+              <summary>
+                <div class="cat-left">
+                  <div class="cat-title">${escapeHtml(cat)}</div>
+                  <div class="cat-sub">${items.length} itens</div>
+                </div>
+                <div class="count">Toque para recolher</div>
+              </summary>
+              ${linesHtml}
+            </details>
+          `;
+        }
+
+        const cards = items.map((it,i)=>{
+          const key = `${cfg.key}::${st}::${cat}::${i}`;
+          index.set(key, it);
+          return cardHtml(it, key);
+        }).join("");
+
+        return `
+          <details class="cat" open>
+            <summary>
+              <div class="cat-left">
+                <div class="cat-title">${escapeHtml(cat)}</div>
+                <div class="cat-sub">${items.length} itens</div>
+              </div>
+              <div class="count">Toque para recolher</div>
+            </summary>
+            <div class="line-block">
+              <div class="grid">${cards}</div>
+            </div>
+          </details>
+        `;
+      }).join("");
+
+      const h3Class = st === "LACRADOS" ? "h3-blue" : "h3-green";
+      const label = st === "LACRADOS" ? "📦 Lacrados" : "✨ Seminovos";
+
+      return `
+        <div class="section">
+          <div class="section-head">
+            <h3 class="${h3Class}">${label}</h3>
+            <div class="count">${total} itens</div>
+          </div>
+          ${catsHtml}
+        </div>
+      `;
+    }).join("");
+
+  container.innerHTML = `
+    <div class="block">
+      <div class="block-head">
+        <div class="block-left">
+          <div class="store-badge ${cfg.badgeClass}">${cfg.icon} ${escapeHtml(cfg.title)}</div>
+          <div class="block-sub">Toque em “Copiar” para mensagem pronta</div>
+        </div>
+        <div class="block-sub">Cores exibidas conforme a lista</div>
+      </div>
+      ${html || `<div class="section"><div class="foot">Nenhum item encontrado nesta lista.</div></div>`}
+      <div class="foot">Valores à vista • Parcelamento: consultar</div>
+    </div>
+  `;
+
+  container.querySelector(".block").addEventListener("click",(e)=>{
+    const btn = e.target.closest("button.copy");
+    if (!btn) return;
+    const key = btn.getAttribute("data-key");
+    const item = index.get(key);
+    if (!item) return;
+    copyText(buildMessage(item));
+  }, { passive:true });
+}
+
+function render(){
+  formatUpdatedPill();
+
+  const app = document.getElementById("app");
+  app.innerHTML = "";
+
+  const parsedManga = parseList(RAW_MANGA, "MANGA");
+  const parsedTech  = parseList(RAW_TECH, "ImportTech");
+
+  const mangaWrap = document.createElement("div");
+  const techWrap  = document.createElement("div");
+
+  renderBlock(mangaWrap, { key:"MANGA", title:"Aparelhos MANGA", badgeClass:"manga", icon:"🥭" }, parsedManga);
+  renderBlock(techWrap,  { key:"TECH",  title:"Aparelhos ImportTech", badgeClass:"tech",  icon:"⚡" }, parsedTech);
+
+  app.appendChild(mangaWrap);
+  app.appendChild(techWrap);
+}
+
+render();
+</script>
+</body>
+</html>
