@@ -26,7 +26,11 @@
       --tech:#0a84ff;      /* azul */
     }
 
-    *{box-sizing:border-box}
+    *{box-sizing:border-box; min-width:0;}
+
+    /* ✅ Evita “layout maior que a tela” no iOS */
+    html, body { width:100%; max-width:100%; overflow-x:hidden; }
+
     body{
       margin:0;
       color:var(--text);
@@ -50,6 +54,7 @@
       max-width:1100px;margin:0 auto;
       padding:14px 14px;
       display:flex;align-items:flex-end;justify-content:space-between;gap:12px;
+      flex-wrap: wrap;
     }
     .title{display:flex;flex-direction:column;gap:4px}
     .title h1{
@@ -57,17 +62,20 @@
       background: linear-gradient(90deg,var(--blue),var(--purple));
       -webkit-background-clip:text;background-clip:text;color:transparent;
     }
-    .title small{color:var(--muted);font-size:12px}
+    .title small{color:var(--muted);font-size:12px;overflow-wrap:anywhere}
+
     .pill{
       display:inline-flex;align-items:center;gap:8px;
       padding:10px 12px;border-radius:999px;
       background: rgba(255,255,255,.84);
       border:1px solid var(--stroke);
       box-shadow: 0 6px 18px rgba(0,0,0,.06);
-      white-space:nowrap;font-size:12px;color:var(--muted);
+      font-size:12px;color:var(--muted);
+      max-width:100%;
+      white-space: normal; /* ✅ não estoura no mobile */
     }
 
-    .wrap{max-width:1100px;margin:0 auto;padding:18px 14px 42px;}
+    .wrap{max-width:1100px;margin:0 auto;padding:18px 14px 42px;width:100%;}
     .block{
       border:1px solid var(--stroke);
       border-radius: 22px;
@@ -75,15 +83,17 @@
       box-shadow: 0 10px 28px rgba(0,0,0,.06);
       overflow:hidden;
       margin: 14px 0;
+      width:100%;
+      max-width:100%;
     }
 
-    /* ✅ Fundo preto na parte do topo do bloco */
     .block-head{
       padding:14px 14px;
       display:flex;align-items:center;justify-content:space-between;gap:12px;
       border-bottom:1px solid rgba(255,255,255,.10);
       background: var(--black);
       color: #fff;
+      flex-wrap: wrap;
     }
 
     .block-left{
@@ -91,9 +101,9 @@
       align-items:center;
       gap:10px;
       flex-wrap:wrap;
+      min-width: 0;
     }
 
-    /* ✅ “título” como badge */
     .store-badge{
       display:inline-flex;
       align-items:center;
@@ -117,13 +127,15 @@
       border-radius: 999px;
       border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.08);
-      white-space:nowrap;
+      max-width: 100%;
+      white-space: normal; /* ✅ não estoura no mobile */
     }
 
     .section{padding: 2px 12px 14px;}
     .section-head{
       display:flex;align-items:center;justify-content:space-between;gap:10px;
       margin: 14px 2px 10px;
+      flex-wrap:wrap;
     }
     .section-head h3{
       margin:0;font-size:15px;letter-spacing:-.2px;
@@ -135,6 +147,7 @@
       padding:6px 10px;border-radius:999px;
       border:1px solid var(--stroke);
       background: rgba(255,255,255,.65);
+      white-space:nowrap;
     }
 
     details.cat{
@@ -143,30 +156,41 @@
       background: rgba(255,255,255,.55);
       overflow:hidden;
       margin-bottom: 10px;
+      width:100%;
+      max-width:100%;
     }
     details.cat > summary{
       list-style:none;cursor:pointer;
       padding: 12px 12px;
       display:flex;align-items:center;justify-content:space-between;gap:12px;
+      flex-wrap:wrap;
     }
     details.cat > summary::-webkit-details-marker{display:none}
-    .cat-left{display:flex;flex-direction:column;gap:2px}
-    .cat-title{margin:0;font-size:13px;font-weight:760;letter-spacing:-.2px}
+    .cat-left{display:flex;flex-direction:column;gap:2px;min-width:0}
+    .cat-title{margin:0;font-size:13px;font-weight:760;letter-spacing:-.2px;overflow-wrap:anywhere}
     .cat-sub{font-size:12px;color:var(--muted)}
 
-    .line-block{padding:0 10px 10px}
+    .line-block{padding:0 10px 10px; width:100%; max-width:100%;}
     .line-title{
       margin: 10px 2px 8px;
       font-size:12px;color:var(--muted);
       letter-spacing:.2px;text-transform:uppercase;
     }
 
+    /* ✅ GRID 100% RESPONSIVO (ajusta por aparelho) */
     .grid{
-      display:grid;gap:10px;
-      grid-template-columns: repeat(4, 1fr);
+      display:grid;
+      gap:10px;
+      width:100%;
+      max-width:100%;
+      min-width:0;
+      grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
     }
-    @media (max-width:560px){ .grid{grid-template-columns:repeat(2,1fr)} }
-    @media (min-width:561px) and (max-width:920px){ .grid{grid-template-columns:repeat(3,1fr)} }
+
+    /* ✅ Se a tela for bem estreita, vira 1 por linha (nunca corta) */
+    @media (max-width:360px){
+      .grid{ grid-template-columns: 1fr; }
+    }
 
     .card{
       background: var(--card);
@@ -176,6 +200,9 @@
       box-shadow: 0 10px 24px rgba(0,0,0,.06);
       display:flex;flex-direction:column;gap:10px;
       min-height: 154px;
+      width:100%;
+      max-width:100%;
+      min-width:0;
     }
 
     .badge{
@@ -185,6 +212,7 @@
       border:1px solid rgba(0,0,0,.06);
       background: rgba(0,0,0,.04);
       color: rgba(29,29,31,.72);
+      white-space:nowrap;
     }
     .badge.lacrado{
       background: rgba(10,132,255,.10);
@@ -196,24 +224,42 @@
       border-color: rgba(52,199,89,.22);
       color: rgba(52,199,89,.95);
     }
+    .badge.upgrade{
+      background:#0b6b2b;
+      border-color: rgba(255,255,255,.18);
+      color:#fff;
+    }
 
-    .name{margin:0;font-size:13px;font-weight:900;letter-spacing:-.15px;line-height:1.2}
-    .details{margin:0;font-size:12px;color:var(--muted);line-height:1.25;min-height:15px}
+    .name{
+      margin:0;font-size:13px;font-weight:900;letter-spacing:-.15px;line-height:1.2;
+      overflow-wrap:anywhere; word-break: break-word;
+    }
+    .details{
+      margin:0;font-size:12px;color:var(--muted);line-height:1.25;min-height:15px;
+      overflow-wrap:anywhere; word-break: break-word;
+    }
 
-    .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:-2px}
+    .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:-2px;min-width:0}
     .chip{
       font-size:11px;
       padding:5px 8px;border-radius:999px;
       background: rgba(0,0,0,.035);
       border:1px solid rgba(0,0,0,.06);
       color: rgba(29,29,31,.72);
+      max-width: 100%;
+      overflow-wrap:anywhere;
     }
 
     .price-row{
       margin-top:auto;
       display:flex;align-items:flex-end;justify-content:space-between;gap:10px;
+      min-width:0;
+      flex-wrap: wrap;
     }
-    .price{font-weight:900;letter-spacing:-.2px;font-size:14px;white-space:nowrap}
+    .price{
+      font-weight:900;letter-spacing:-.2px;font-size:14px;
+      white-space: normal;
+    }
 
     .copy{
       appearance:none;
@@ -276,13 +322,6 @@
  *  1) LISTAS (ATUALIZE TODO DIA AQUI)
  *  ========================= */
 const RAW_MANGA = String.raw`
-Confira nossa lista de aparelhos lacrados para venda abaixo:
-
-VALORES Á VISTA, PARCELADO EM ATÉ 18x CONSULTAR💳
-LISTA ATUALIZADA DIARIAMENTE❗
-
-—————————————————————
-
 IPHONE LACRADO📦
 
 **iPad**
@@ -319,17 +358,13 @@ IPHONE LACRADO📦
 
 **Valores da linha 17 para pagamento na hora da RETIRADA**
 
-📍 IPHONE 17 pro 256gb laranja *R$ 8400,00*
+📍 IPHONE 17 pro 256gb laranja *R$ 8200,00*
 
-📍 IPHONE 17 pro 256gb azul *R$ 8600,00*
+📍 IPHONE 17 pro 256gb azul *R$ 8300,00*
 
-📍 IPHONE 17 pro Max 256gb laranja e azul *R$ 9100,00*
+📍 IPHONE 17 pro Max 256gb laranja e azul *R$ 9000,00*
 
-📍 IPHONE 17 pro Max 256gb silver *R$ 9300,00*
-
-📍 IPHONE 17 pro Max 512gb azul e laranja *R$ 11000,00*
-
-📍 IPHONE 17 pro Max 512gb silver *R$ 11200,00*
+📍 IPHONE 17 pro Max 256gb silver *R$ 9100,00*
 
 PREÇOS BOA DICA (ACRÉSCIMO R$500)
 
@@ -341,7 +376,7 @@ IPHONE SEMINOVOS📱
 
 📍 iPhone 12 Pro Max - grade A 128gb azul ( bateria 90 a 100) *R$ 2950,00*
 
-📍 iPhone 13- 128gb grade Ab branco ( bateria 90 a 💯) *R$ 2400,00*
+📍 iPhone 13-128gb grade Ab branco ( bateria 90 a 💯) *R$ 2400,00*
 
 📍 iPhone 13 Pro - 256GB (UPGRADE) preto ( bateria 100% ) *R$ 3250,00*
 
@@ -350,10 +385,6 @@ IPHONE SEMINOVOS📱
 📍 iPhone 14 Plus - 128gb grade Ab preto ( bateria 90 a 💯 ) *R$ 2950,00*
 
 📍 iPhone 14 Pro - 128GB (UPGRADE) DOURADO ( bateria 100% ) *R$ 3500*
-
-📍 iPhone 14 Pro Max - 128 grade A preto ( bateria 85 ) *R$ 4250,00*
-
-📍 iPhone 15 - 128gb grade A azul ( bateria 90 a 💯 ) *R$ 3600,00*
 
 📍 iPhone 15 pro - 128gb grade A natural ( bateria 90 a 💯 ) *R$ 4400,00*
 
@@ -364,11 +395,7 @@ IPHONE SEMINOVOS📱
 `;
 
 const RAW_TECH = String.raw`
-IPHONE SEMINOVOS📱
-
-📲 12 128gb A *R$ 2.050,00*
-🖤
-
+IPHONE SEMINOVOS
 📲 12pro 256gb A *R$ 2.500,00*
 💙🩶
 
@@ -379,16 +406,16 @@ IPHONE SEMINOVOS📱
 💙🖤
 
 📲 13 128gb A *R$ 2.550,00*
-🖤🤍🩷💙
+🖤🤍🩷
 
 📲 13 256gb A *R$ 2.700,00*
 🖤
 
 📲 13 pro 128gb A *R$ 3.050,00*
-🤍🖤
+🤍🖤🩵
 
 📲 13 pro 256gb A *R$ 3.150,00*
-🤍🧡
+🤍
 
 📲 13 pro max 128gb A *R$ 3.450,00*
 🩶
@@ -397,31 +424,31 @@ IPHONE SEMINOVOS📱
 🧡🤍
 
 📲 14 128gb A *R$ 2.750,00*
-💜🩵
+💜🖤🤍
 
 📲 14 Plus 128gb A *R$ 2.950,00*
 ❤️🖤💜
 
-📲 14 pro 128gb A *R$ 3.500,00*
-🖤
+📲 14 pro 128gb A *R$ 3.400,00*
+🖤💜
+
+📲 14 pro 256gb A *R$ 3.600,00*
+💜🖤
 
 📲 14 pro max 128gb A *R$ 3.900,00*
 💜🖤
 
 📲 14 pro max 256gb A *R$ 4.050,00*
-💜🖤
+🖤
 
 📲 15 128gb A *R$ 3.500,00*
 🩷🩵
-
-📲 15 256gb A *R$ 3.650,00*
-🩷
 
 📲 15 pro 128gb A *R$ 4.150,00*
 🩶💙
 
 📲 15 pro 256gb A *R$ 4.350,00*
-🤍🩶
+🤍🩶💙
 
 📲 15 Plus 128gb A *R$ 3.700,00*
 🩷🖤
@@ -432,29 +459,32 @@ IPHONE SEMINOVOS📱
 📲 15 pro max 256gb A *R$ 5.000,00*
 🖤💙🤍
 
+📲 15 pro max 512gb A *R$ 5.150,00*
+🩶💙
+
 📲 15 pro max 1T A *R$ 5.300,00*
-💙
+💙🖤
 
 📱16 128gb A *R$ 4.300,00*
-🖤
+🖤 💙
 
 📲 16 plus 128gb A *R$ 4.750,00*
 🖤
 
 📲 16 pro 128gb A *R$ 5.100,00*
-🩶🤍
+🩶🤍🧡
 
 📲 16 pro 256gb A *R$ 5.350,00*
 🧡
 
 📲 16 pro max 256gb A *R$ 6.350,00*
-🤍🧡
+🤍🧡🩶
 
 📲 16 pro max 512gb A *R$ 6.500,00*
 🖤
 
 📲 16pro Max 1T A *R$ 6.600,00*
-🧡
+🧡🖤
 `;
 
 /** =========================
@@ -583,22 +613,17 @@ function colorsTextForMessage(item){
   return unique.join(" / ");
 }
 
-/* ✅ Limpeza: só Modelo + Capacidade (remove grade/upgrade/bateria/garantia/CPO etc) */
 function extractCapacity(text){
   const s = (text || "");
   const m = s.match(/\b(64|128|256|512)\s*gb\b|\b1\s*tb\b|\b2\s*tb\b|\b1\s*t\b/i);
   if (!m) return "";
-  let cap = m[0].toUpperCase().replace(/\s+/g,"").replace("T","TB");
-  // garante "GB"/"TB" bonitinho
-  cap = cap.replace("GB","GB").replace("TB","TB");
-  return cap;
+  return m[0].toUpperCase().replace(/\s+/g,"").replace("T","TB");
 }
 
 function cleanModelOnly(text){
-  // remove conteúdos entre parênteses e termos indesejados
   let s = (text || "")
-    .replace(/\(.*?\)/g," ")                 // ( bateria 100% )
-    .replace(/\bgrade\s*[a-z]+\b/ig," ")     // grade A / grade Ab
+    .replace(/\(.*?\)/g," ")
+    .replace(/\bgrade\s*[a-z]+\b/ig," ")
     .replace(/\bUPGRADE\b/ig," ")
     .replace(/\bGARANTIA\b/ig," ")
     .replace(/\bBATERIA\b/ig," ")
@@ -609,23 +634,18 @@ function cleanModelOnly(text){
     .replace(/\s+/g," ")
     .trim();
 
-  // pega apenas o começo até a capacidade (se existir)
   const cap = extractCapacity(s);
   if (cap){
     const idx = s.toUpperCase().indexOf(cap);
     if (idx > 0) s = s.slice(0, idx).trim();
   }
 
-  // TECH às vezes vem "12 pro max" sem iPhone
   const up = s.toUpperCase();
   if (!up.includes("IPHONE") && (/^\d{2}\b/.test(s) || up.startsWith("12") || up.startsWith("13") || up.startsWith("14") || up.startsWith("15") || up.startsWith("16") || up.startsWith("17"))){
     s = `iPhone ${s}`.replace(/\s+/g," ").trim();
   }
 
-  // normaliza casing Apple
   s = capitalizeBrand(s);
-
-  // ajeita "Pro max" -> "Pro Max"
   s = s.replace(/\bPRO\s+MAX\b/ig,"Pro Max")
        .replace(/\bPRO\b/ig,"Pro")
        .replace(/\bPLUS\b/ig,"Plus")
@@ -701,6 +721,8 @@ function parseList(rawText, sourceName){
         emojiColors = extractColorsFromEmojiLine(next);
       }
       item.colorsEmoji = emojiColors;
+
+      item.isUpgrade = /\bUPGRADE\b/i.test(item.raw) || /\bUPGRADE\b/i.test(item.title);
 
       data[status] ??= {};
       data[status][category] ??= [];
@@ -788,9 +810,12 @@ function cardHtml(it, key){
     chips.push(`<span class="chip">${escapeHtml(e)}${name ? " "+escapeHtml(name) : ""}</span>`);
   });
 
+  const upgradeBadge = it.isUpgrade ? `<div class="badge upgrade">UPGRADE</div>` : "";
+
   return `
     <article class="card">
       <div class="badge ${badgeClass}">${badgeText}</div>
+      ${upgradeBadge}
       <h4 class="name">${escapeHtml(displayTitle(it))}</h4>
       <p class="details">${colorsTxt ? `Cores: ${escapeHtml(colorsTxt)}` : ""}</p>
       ${chips.length ? `<div class="chips">${chips.join("")}</div>` : ""}
