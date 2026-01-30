@@ -27,8 +27,6 @@
     }
 
     *{box-sizing:border-box; min-width:0;}
-
-    /* ✅ Evita “layout maior que a tela” no iOS */
     html, body { width:100%; max-width:100%; overflow-x:hidden; }
 
     body{
@@ -72,7 +70,7 @@
       box-shadow: 0 6px 18px rgba(0,0,0,.06);
       font-size:12px;color:var(--muted);
       max-width:100%;
-      white-space: normal; /* ✅ não estoura no mobile */
+      white-space: normal;
     }
 
     .wrap{max-width:1100px;margin:0 auto;padding:18px 14px 42px;width:100%;}
@@ -128,7 +126,7 @@
       border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.08);
       max-width: 100%;
-      white-space: normal; /* ✅ não estoura no mobile */
+      white-space: normal;
     }
 
     .section{padding: 2px 12px 14px;}
@@ -137,9 +135,7 @@
       margin: 14px 2px 10px;
       flex-wrap:wrap;
     }
-    .section-head h3{
-      margin:0;font-size:15px;letter-spacing:-.2px;
-    }
+    .section-head h3{ margin:0;font-size:15px;letter-spacing:-.2px; }
     .h3-blue{color:var(--blue)}
     .h3-green{color:var(--green)}
     .count{
@@ -177,7 +173,6 @@
       letter-spacing:.2px;text-transform:uppercase;
     }
 
-    /* ✅ GRID 100% RESPONSIVO (ajusta por aparelho) */
     .grid{
       display:grid;
       gap:10px;
@@ -186,8 +181,6 @@
       min-width:0;
       grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
     }
-
-    /* ✅ Se a tela for bem estreita, vira 1 por linha (nunca corta) */
     @media (max-width:360px){
       .grid{ grid-template-columns: 1fr; }
     }
@@ -256,9 +249,21 @@
       min-width:0;
       flex-wrap: wrap;
     }
+
+    /* ✅ Agora mostra "à vista • 12x ..." na mesma linha */
     .price{
       font-weight:900;letter-spacing:-.2px;font-size:14px;
       white-space: normal;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:baseline;
+    }
+    .installment{
+      font-weight:800;
+      font-size:12px;
+      color: rgba(29,29,31,.70);
+      white-space:nowrap;
     }
 
     .copy{
@@ -318,6 +323,42 @@
 <div class="toast" id="toast">Mensagem copiada ✅</div>
 
 <script>
+/** =========================
+ *  0) TAXAS DA MÁQUINA (edite aqui quando mudar)
+ *  ========================= */
+const CARD_FEES = {
+  credit: {
+    12: 0.1070
+  }
+};
+
+/** Converte "R$ 3.450,00" -> 3450.00 */
+function parseBRL(brl){
+  if (!brl) return NaN;
+  const s = String(brl)
+    .replace(/[^\d.,-]/g,"")
+    .replace(/\./g,"")
+    .replace(",",".");
+  const n = Number(s);
+  return Number.isFinite(n) ? n : NaN;
+}
+function formatBRL(n){
+  if (!Number.isFinite(n)) return "";
+  return n.toLocaleString("pt-BR", { style:"currency", currency:"BRL" });
+}
+
+/**
+ * ✅ Quer receber o valor à vista "limpo":
+ * cliente paga: vista / (1 - taxa)
+ */
+function calcParcela12FromCash(cashValue){
+  const fee = CARD_FEES.credit?.[12];
+  if (!Number.isFinite(cashValue) || !fee) return null;
+  const total = cashValue / (1 - fee);
+  const parcela = total / 12;
+  return { parcela };
+}
+
 /** =========================
  *  1) LISTAS (ATUALIZE TODO DIA AQUI)
  *  ========================= */
@@ -393,7 +434,6 @@ IPHONE SEMINOVOS📱
 📍 iPhone 16 pro - 256gb grade A natural e desert. ( bateria 90 a 💯 ) *R$ 5400,00*
 
 📍 iPhone 16 pro Max - 256gb grade A natural e desert ( bateria 90 a 💯 ) *R$ 5900,00*
-
 `;
 
 const RAW_TECH = String.raw`
@@ -440,7 +480,7 @@ IPHONE SEMINOVOS
 📲 14 Plus 128gb A *R$ 2.950,00*
 ❤️🖤💜💛
 
-📲 14 pro 128gb A *R$ 3.400,00*
+📲 14 pro 128gb A *R$ 3.500,00*
 🖤
 
 📲 14 pro 128gb AB *R$ 3.100,00*
@@ -461,7 +501,7 @@ IPHONE SEMINOVOS
 📲 15 pro 128gb A *R$ 4.150,00*
 🩶💙
 
-📲 15 pro 256gb A *R$ 4.300,00*
+📲 15 pro 256gb A *R$ 4.500,00*
 🩶💙🤍
 
 📲 15 Plus 128gb A *R$ 3.650,00*
@@ -495,16 +535,16 @@ IPHONE SEMINOVOS
 /** =========================
  *  2) MENSAGENS (COPIAR)
  *  ========================= */
-const TEMPLATE_LACRADO = (model, price, colorsTxt) => `Eu tenho o ${model} lacrado, com garantia oficial Apple! 📦
-está saindo por apenas ${price} à vista na promoção.
+const TEMPLATE_LACRADO = (model, price, installment12Txt, colorsTxt) => `Eu tenho o ${model} lacrado, com garantia oficial Apple! 📦
+está saindo por ${price}${installment12Txt ? ` • ou 12x de ${installment12Txt}` : ""}.
 
 ${colorsTxt ? `🎨 Cores disponíveis: ${colorsTxt}\n\n` : ""}📦 Ele é:
 ✅ Totalmente novo, lacrado na caixa original
 ✅ Produto 100% original e com nota fiscal no seu nome
 ✅ Vai completo com cabo, manual e tudo certinho da Apple`;
 
-const TEMPLATE_SEMINOVO = (model, price, colorsTxt) => `Eu tenho o ${model} seminovo, em perfeito estado! 📦
-está saindo por apenas ${price} à vista na promoção.
+const TEMPLATE_SEMINOVO = (model, price, installment12Txt, colorsTxt) => `Eu tenho o ${model} seminovo, em perfeito estado! 📦
+está saindo por ${price}${installment12Txt ? ` • ou 12x de ${installment12Txt}` : ""}.
 
 ${colorsTxt ? `🎨 Cores disponíveis: ${colorsTxt}\n\n` : ""}📦 Seminovos:
 ✅ 6 meses de garantia pela loja
@@ -572,7 +612,7 @@ function extractColorsFromWords(text){
   const COLORS = [
     "preto","branco","azul","rosa","verde","vermelho","amarelo","roxo","cinza","grafite",
     "prata","dourado","bege","laranja",
-    "silver","midnight","starlight","gold","graphite","space gray","spacegrey","natural"
+    "silver","midnight","starlight","gold","graphite","space gray","spacegrey","natural","desert"
   ];
 
   const afterStorage = t.split(/\b(64|128|256|512)\s*gb\b|\b1\s*tb\b|\b2\s*tb\b|\b1\s*t\b/).pop() || t;
@@ -759,13 +799,22 @@ async function copyText(text){
   }
 }
 
+/* ✅ Só retorna "R$ xxx,xx" da parcela 12x */
+function buildInstallment12Only(item){
+  const cash = parseBRL(item.price);
+  const calc = calcParcela12FromCash(cash);
+  if (!calc) return "";
+  return formatBRL(calc.parcela);
+}
+
 function buildMessage(item){
   const model = modelForMessage(item);
   const price = item.price || "R$ (consultar)";
   const colorsTxt = colorsTextForMessage(item);
+  const installment12Txt = buildInstallment12Only(item);
 
-  if (item.status === "SEMINOVOS") return TEMPLATE_SEMINOVO(model, price, colorsTxt);
-  return TEMPLATE_LACRADO(model, price, colorsTxt);
+  if (item.status === "SEMINOVOS") return TEMPLATE_SEMINOVO(model, price, installment12Txt, colorsTxt);
+  return TEMPLATE_LACRADO(model, price, installment12Txt, colorsTxt);
 }
 
 /** =========================
@@ -816,6 +865,7 @@ function cardHtml(it, key){
   });
 
   const upgradeBadge = it.isUpgrade ? `<div class="badge upgrade">UPGRADE</div>` : "";
+  const installment12 = buildInstallment12Only(it);
 
   return `
     <article class="card">
@@ -825,7 +875,10 @@ function cardHtml(it, key){
       <p class="details">${colorsTxt ? `Cores: ${escapeHtml(colorsTxt)}` : ""}</p>
       ${chips.length ? `<div class="chips">${chips.join("")}</div>` : ""}
       <div class="price-row">
-        <div class="price">${escapeHtml(it.price || "Consultar")}</div>
+        <div class="price">
+          <span>${escapeHtml(it.price || "Consultar")}</span>
+          ${installment12 ? `<span class="installment">12x de ${escapeHtml(installment12)}</span>` : ""}
+        </div>
         <button class="copy" type="button" data-key="${escapeHtml(key)}">📋 Copiar</button>
       </div>
     </article>
