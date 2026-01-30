@@ -89,7 +89,7 @@
 
     .block-head{
       padding:14px 14px;
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      display:flex;align-items:flex-end;justify-content:space-between;gap:12px;
       border-bottom:1px solid rgba(255,255,255,.10);
       background: var(--black);
       color: #fff;
@@ -490,7 +490,6 @@ IPHONE SEMINOVOS
 
 📲 16pro Max 1T A *R$ 6.499,00*
 🖤
-
 `;
 
 /** =========================
@@ -878,13 +877,13 @@ function renderBlock(container, cfg, parsed){
           }).join("");
 
           return `
-            <details class="cat" open>
+            <details class="cat">
               <summary>
                 <div class="cat-left">
                   <div class="cat-title">${escapeHtml(cat)}</div>
                   <div class="cat-sub">${items.length} itens</div>
                 </div>
-                <div class="count">Toque para recolher</div>
+                <div class="count">Toque para abrir</div>
               </summary>
               ${linesHtml}
             </details>
@@ -898,13 +897,13 @@ function renderBlock(container, cfg, parsed){
         }).join("");
 
         return `
-          <details class="cat" open>
+          <details class="cat">
             <summary>
               <div class="cat-left">
                 <div class="cat-title">${escapeHtml(cat)}</div>
                 <div class="cat-sub">${items.length} itens</div>
               </div>
-              <div class="count">Toque para recolher</div>
+              <div class="count">Toque para abrir</div>
             </summary>
             <div class="line-block">
               <div class="grid">${cards}</div>
