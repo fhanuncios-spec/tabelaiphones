@@ -24,6 +24,9 @@
       --black:#0b0b0f;
       --manga:#0b3d1a;     /* verde escuro */
       --tech:#0a84ff;      /* azul */
+
+      --techDark:#061b3a;  /* azul escuro p/ iPhone ImportTech */
+      --mangaDark:#0b0b0f; /* preto p/ iPhone MANGA */
     }
 
     *{box-sizing:border-box; min-width:0;}
@@ -62,6 +65,11 @@
     }
     .title small{color:var(--muted);font-size:12px;overflow-wrap:anywhere}
 
+    .head-actions{
+      display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end;
+      max-width:100%;
+    }
+
     .pill{
       display:inline-flex;align-items:center;gap:8px;
       padding:10px 12px;border-radius:999px;
@@ -72,6 +80,23 @@
       max-width:100%;
       white-space: normal;
     }
+
+    .toggleAll{
+      appearance:none;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.84);
+      color: rgba(29,29,31,.78);
+      font-weight:900;
+      font-size:12px;
+      padding:10px 12px;
+      border-radius:999px;
+      cursor:pointer;
+      box-shadow: 0 6px 18px rgba(0,0,0,.06);
+      transition: transform .08s ease, background .2s ease;
+      white-space:nowrap;
+    }
+    .toggleAll:active{transform:scale(.98)}
+    .toggleAll:hover{background: rgba(255,255,255,.92)}
 
     .wrap{max-width:1100px;margin:0 auto;padding:18px 14px 42px;width:100%;}
     .block{
@@ -166,12 +191,34 @@
     .cat-title{margin:0;font-size:13px;font-weight:760;letter-spacing:-.2px;overflow-wrap:anywhere}
     .cat-sub{font-size:12px;color:var(--muted)}
 
-    .line-block{padding:0 10px 10px; width:100%; max-width:100%;}
+    /* ---- Linhas (LINHA 12, 13...) agora também viram "abas" ---- */
+    details.line{
+      border:1px solid rgba(0,0,0,.06);
+      border-radius: 14px;
+      background: rgba(255,255,255,.48);
+      margin: 10px 10px 12px;
+      overflow:hidden;
+    }
+    details.line > summary{
+      list-style:none;cursor:pointer;
+      padding: 10px 10px;
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+    }
+    details.line > summary::-webkit-details-marker{display:none}
     .line-title{
-      margin: 10px 2px 8px;
       font-size:12px;color:var(--muted);
       letter-spacing:.2px;text-transform:uppercase;
+      margin:0;
     }
+    .line-hint{
+      font-size:12px;color:var(--muted);
+      padding:6px 10px;border-radius:999px;
+      border:1px solid rgba(0,0,0,.06);
+      background: rgba(255,255,255,.65);
+      white-space:nowrap;
+    }
+
+    .line-block{padding:0 10px 10px; width:100%; max-width:100%;}
 
     .grid{
       display:grid;
@@ -192,10 +239,46 @@
       padding: 12px;
       box-shadow: 0 10px 24px rgba(0,0,0,.06);
       display:flex;flex-direction:column;gap:10px;
-      min-height: 154px;
+      min-height: 168px;
       width:100%;
       max-width:100%;
       min-width:0;
+    }
+
+    /* ✅ Fundo iPhone por loja */
+    .card.iphone.manga{
+      background: var(--mangaDark);
+      border-color: rgba(255,255,255,.14);
+      color:#fff;
+    }
+    .card.iphone.tech{
+      background: var(--techDark);
+      border-color: rgba(255,255,255,.14);
+      color:#fff;
+    }
+    .card.iphone.manga .details,
+    .card.iphone.tech  .details{
+      color: rgba(255,255,255,.72);
+    }
+    .card.iphone.manga .chip,
+    .card.iphone.tech  .chip{
+      background: rgba(255,255,255,.10);
+      border-color: rgba(255,255,255,.16);
+      color: rgba(255,255,255,.85);
+    }
+    .card.iphone.manga .installment,
+    .card.iphone.tech  .installment{
+      color: rgba(255,255,255,.78);
+    }
+    .card.iphone.manga .copy,
+    .card.iphone.tech  .copy{
+      border-color: rgba(255,255,255,.18);
+      background: rgba(255,255,255,.10);
+      color: rgba(255,255,255,.92);
+    }
+    .card.iphone.manga .copy:hover,
+    .card.iphone.tech  .copy:hover{
+      background: rgba(255,255,255,.14);
     }
 
     .badge{
@@ -250,7 +333,6 @@
       flex-wrap: wrap;
     }
 
-    /* ✅ Agora mostra "à vista • 12x ..." na mesma linha */
     .price{
       font-weight:900;letter-spacing:-.2px;font-size:14px;
       white-space: normal;
@@ -315,7 +397,11 @@
       <h1>🍏 Lista Apple • MANGA & ImportTech</h1>
       <small>Valores à vista. Parcelado em até 18x: consultar.</small>
     </div>
-    <div class="pill" id="updatedPill">📌 Atualização: hoje</div>
+
+    <div class="head-actions">
+      <button class="toggleAll" id="toggleAllBtn" type="button">🔽 Abrir todas</button>
+      <div class="pill" id="updatedPill">📌 Atualização: hoje</div>
+    </div>
   </div>
 </header>
 
@@ -324,11 +410,16 @@
 
 <script>
 /** =========================
- *  0) TAXAS DA MÁQUINA (edite aqui quando mudar)
+ *  0) TAXAS DA MÁQUINA (ajuste aqui quando mudar)
+ *  IMPORTANTE:
+ *  - Estes valores estão calibrados para bater com o valor que você informou da máquina.
+ *  - Exemplo (R$ 3400): 6x 612,34 | 10x 376,18 | 12x 318,35
  *  ========================= */
 const CARD_FEES = {
   credit: {
-    12: 0.1070
+    6:  0.07458819174532672,
+    10: 0.0961773619012175,
+    12: 0.10999424113920742
   }
 };
 
@@ -348,15 +439,16 @@ function formatBRL(n){
 }
 
 /**
- * ✅ Quer receber o valor à vista "limpo":
- * cliente paga: vista / (1 - taxa)
+ * Cliente paga (parcelado): total = vista / (1 - taxa)
+ * Parcela = total / n
  */
-function calcParcela12FromCash(cashValue){
-  const fee = CARD_FEES.credit?.[12];
+function calcInstallmentFromCash(cashValue, n){
+  const fee = CARD_FEES.credit?.[n];
   if (!Number.isFinite(cashValue) || !fee) return null;
   const total = cashValue / (1 - fee);
-  const parcela = total / 12;
-  return { parcela };
+  const parcela = total / n;
+  // máquina costuma mostrar 2 casas
+  return { parcela: Number(parcela.toFixed(2)) };
 }
 
 /** =========================
@@ -367,11 +459,7 @@ IPHONE LACRADO📦
 
 **iPad**
 
-📍 IPAD 11 128 * (A16) silver *R$ 2950,00*
-
 📍 IPAD 11 256 * (A16) azul *R$ 3400,00*
-
-📍 MAC MINI (M4) 512GB 16GB MIDNIGHT *R$ 5200,00*
 
 ---
 
@@ -397,21 +485,21 @@ IPHONE LACRADO📦
 
 📍 IPHONE 16 256gb branco / rosa e preto *R$ 5400,00*
 
-📍 IPHONE 17 256gb branco / lilás / azul e preto *R$ 6200,00*
+📍 IPHONE 17 256gb branco / lilás / azul e preto *R$ 6100,00*
 
 📍 IPHONE 17 pro 256gb laranja *R$ 8200,00*
 
-📍 IPHONE 17 pro 256gb azul *R$ 8300,00*
-
-📍 IPHONE 17 pro Max 256gb laranja *R$ 8700,00*
-
-📍 IPHONE 17 pro Max 256gb azul *R$ 8800,00*
+📍 IPHONE 17 pro Max 256gb azul e laranja *R$ 8800,00*
 
 📍 IPHONE 17 pro Max 256gb silver *R$ 9000,00*
 
 📍 IPHONE 17 pro Max 512gb laranja *R$ 10200,00*
 
 IPHONE SEMINOVOS📱
+
+📍 iPhone 12 - 128GB (UPGRADE) grade AB preto ( bateria 100% ) *R$ 1799,00*
+
+📍 iPhone 12 - 128GB (UPGRADE) grade A branco ( bateria 85% ) *R$ 1999,00*
 
 📍 iPhone 12 Pro Max - grade A 128gb azul ( bateria 90 a 100) *R$ 2950,00*
 
@@ -433,18 +521,19 @@ IPHONE SEMINOVOS📱
 
 📍 iPhone 15 pro - 128gb grade A natural ( bateria 90 a 💯 ) *R$ 4400,00*
 
+📍 iPhone 15 PRO MAX  - 256GB (UPGRADE) grade A Natural ( bateria 87% ) *R$4850,00*
+
 📍 iPhone 15 pro max - 512gb grade A natural ( bateria 90 a 💯 ) *R$ 5000,00*
 
 📍 iPhone 16 pro - 256gb grade A natural e desert ( bateria 90 a 💯 ) *R$ 5400,00*
 
 📍 iPhone 16 pro Max - 256gb grade A natural e desert ( bateria 90 a 💯 ) *R$ 5900,00*
-
 `;
 
 const RAW_TECH = String.raw`
 IPHONE SEMINOVOS
 📲 12 64gb A *R$ 1.880,00*
-🤍❤️
+❤️
 
 📲 12pro 256gb A *R$ 2.500,00*
 🩶
@@ -452,29 +541,29 @@ IPHONE SEMINOVOS
 📲 12pro 512gb A *R$ 2.550,00*
 💙
 
-📲 12 pro max 256gb A *R$ 2.950,00*
+📲 12 pro max 256gb A *R$ 2.899,00*
 🖤💙
 
-📲 13 128gb A *R$ 2.550,00*
-🖤💙❤️🤍🩷
+📲 13 128gb A *R$ 2.499,00*
+🖤💙🤍
 
-📲 13 256gb A *R$ 2.700,00*
+📲 13 256gb A *R$ 2.649,00*
 🖤
 
-📲 13 pro 128gb A *R$ 3.050,00*
+📲 13 pro 128gb A *R$ 2.999,00*
 🤍🩵💚🩶
 
-📲 13 pro 256gb A *R$ 3.200,00*
+📲 13 pro 256gb A *R$ 3.149,00*
 🧡🤍💚🩶
 
-📲 13 pro max 128gb A *R$ 3.450,00*
+📲 13 pro max 128gb A *R$ 3.399,00*
 🩶🧡🩵🤍
 
 📲 13 pro max 256gb A *R$ 3.600,00*
-💚🩵🩶
+💚🩶
 
 📲 14 128gb A *R$ 2.700,00*
-🩵🖤💜🤍
+🩵🖤
 
 📲 14 128gb AB *R$ 2.500,00*
 🖤
@@ -482,61 +571,46 @@ IPHONE SEMINOVOS
 📲 14 256gb A *R$ 2.800,00*
 🤍
 
-📲 14 Plus 128gb A *R$ 2.950,00*
+📲 14 Plus 128gb A *R$ 2.899,00*
 ❤️💛💜🩵🖤🤍
 
-📲 14 Plus 128gb AB *R$ 2.650,00*
-🩵
-
-📲 14 plus 256gb AB *R$ 2.599,00*
-🖤
-
-📲 14 Plus 256gb A *R$ 3.050,00*
-🖤🤍💜❤️
-
-📲 14 pro 128gb A *R$ 3.400,00*
-🖤
+📲 14 Plus 256gb A *R$ 2.999,00*
+🖤🤍💜
 
 📲 14 pro 128gb AB *R$ 3.100,00*
 🖤
 
-📲 14 pro 256gb A *R$ 3.600,00*
-🖤🤍💜
+📲 14 pro 256gb A *R$ 3.549,00*
+🖤💜
 
-📲 15 128gb A *R$ 3.450,00*
+📲 15 128gb A *R$ 3.399,00*
 🩷🩵
-
-📲 15 256gb A *R$ 3.600,00*
-🩷
 
 📲 15 Plus 128gb A *R$ 3.650,00*
 🖤🩵🩷
 
-📲 15 pro 128gb A *R$ 4.150,00*
-💙
-
 📲 15 pro 256gb A *R$ 4.300,00*
 🤍🩶💙
 
-📲 15 pro max 256gb A *R$ 4.950,00*
+📲 15 pro max 256gb A *R$ 4.899,00*
 🖤💙🩶
 
-📲 15 pro max 512gb A *R$ 5.050,00*
+📲 15 pro max 512gb A *R$ 5.049,00*
 🩶💙
 
 📲 15 pro max 1T A *R$ 5.150,00*
 💙🖤
 
-📱16 128gb A *R$ 4.250,00*
+📱 16 128gb A *R$ 4.199,00*
 🖤 💙
 
-📲 16 plus 128gb A *R$ 4.750,00*
+📲 16 plus 128gb A *R$ 4.749,00*
 🖤
 
-📲 16 pro 128gb A *R$ 5.100,00*
-🩶🤍🧡
+📲 16 pro 128gb A *R$ 5.149,00*
+🤍🧡
 
-📲 16 pro max 256gb A *R$ 6.190,00*
+📲 16 pro max 256gb A *R$ 6.199,00*
 🤍🧡🩶
 
 📲 16pro Max 1T A *R$ 6.499,00*
@@ -544,18 +618,26 @@ IPHONE SEMINOVOS
 `;
 
 /** =========================
- *  2) MENSAGENS (COPIAR)
+ *  2) MENSAGENS (COPIAR) – inclui 6x, 10x, 12x (somente valor da parcela)
  *  ========================= */
-const TEMPLATE_LACRADO = (model, price, installment12Txt, colorsTxt) => `Eu tenho o ${model} lacrado, com garantia oficial Apple! 📦
-está saindo por ${price}${installment12Txt ? ` • ou 12x de ${installment12Txt}` : ""}.
+function installmentsLine(i6, i10, i12){
+  const parts = [];
+  if (i6)  parts.push(`6x de ${i6}`);
+  if (i10) parts.push(`10x de ${i10}`);
+  if (i12) parts.push(`12x de ${i12}`);
+  return parts.length ? ` • ou ${parts.join(" • ")}` : "";
+}
+
+const TEMPLATE_LACRADO = (model, price, i6, i10, i12, colorsTxt) => `Eu tenho o ${model} lacrado, com garantia oficial Apple! 📦
+está saindo por ${price}${installmentsLine(i6,i10,i12)}.
 
 ${colorsTxt ? `🎨 Cores disponíveis: ${colorsTxt}\n\n` : ""}📦 Ele é:
 ✅ Totalmente novo, lacrado na caixa original
 ✅ Produto 100% original e com nota fiscal no seu nome
 ✅ Vai completo com cabo, manual e tudo certinho da Apple`;
 
-const TEMPLATE_SEMINOVO = (model, price, installment12Txt, colorsTxt) => `Eu tenho o ${model} seminovo, em perfeito estado! 📦
-está saindo por ${price}${installment12Txt ? ` • ou 12x de ${installment12Txt}` : ""}.
+const TEMPLATE_SEMINOVO = (model, price, i6, i10, i12, colorsTxt) => `Eu tenho o ${model} seminovo, em perfeito estado! 📦
+está saindo por ${price}${installmentsLine(i6,i10,i12)}.
 
 ${colorsTxt ? `🎨 Cores disponíveis: ${colorsTxt}\n\n` : ""}📦 Seminovos:
 ✅ 6 meses de garantia pela loja
@@ -676,6 +758,7 @@ function extractCapacity(text){
   return m[0].toUpperCase().replace(/\s+/g,"").replace("T","TB");
 }
 
+/* limpa para exibição: só modelo + capacidade (e cores vêm separado) */
 function cleanModelOnly(text){
   let s = (text || "")
     .replace(/\(.*?\)/g," ")
@@ -696,8 +779,9 @@ function cleanModelOnly(text){
     if (idx > 0) s = s.slice(0, idx).trim();
   }
 
+  // Tech vem "12pro" etc:
   const up = s.toUpperCase();
-  if (!up.includes("IPHONE") && (/^\d{2}\b/.test(s) || up.startsWith("12") || up.startsWith("13") || up.startsWith("14") || up.startsWith("15") || up.startsWith("16") || up.startsWith("17"))){
+  if (!up.includes("IPHONE") && (/^\d{2}/.test(s) || up.startsWith("12") || up.startsWith("13") || up.startsWith("14") || up.startsWith("15") || up.startsWith("16") || up.startsWith("17"))){
     s = `iPhone ${s}`.replace(/\s+/g," ").trim();
   }
 
@@ -716,8 +800,7 @@ function displayTitle(item){
   const colors = colorsTextForMessage(item);
 
   const left = [model, cap].filter(Boolean).join(" • ");
-  if (colors) return `${left} • ${colors}`;
-  return left;
+  return colors ? `${left} • ${colors}` : left;
 }
 
 function modelForMessage(item){
@@ -726,11 +809,12 @@ function modelForMessage(item){
   return cap ? `${model} – ${cap}` : model;
 }
 
-function lineGroupFor(title){
-  const t = (title||"").toUpperCase();
-  const n = (t.match(/\b(1[0-9])\b/) || [])[1];
-  if (!n) return "OUTROS";
-  return `LINHA ${n}`;
+/* ✅ Corrige ImportTech caindo em OUTROS (12pro, 16pro etc) */
+function lineGroupFor(item){
+  const model = cleanModelOnly(item.title || item.raw); // "iPhone 12Pro" / "iPhone 12 Pro"
+  const m = model.match(/iPhone\s*(1[0-9])(?=\D|$)/i);   // pega 12,13,14... mesmo colado em letras
+  if (!m) return "OUTROS";
+  return `LINHA ${m[1]}`;
 }
 
 function parseList(rawText, sourceName){
@@ -767,7 +851,7 @@ function parseList(rawText, sourceName){
       item.source = sourceName;
       item.status = status;
       item.category = category;
-      item.lineGroup = lineGroupFor(item.title);
+      item.lineGroup = lineGroupFor(item);
 
       item.colorsWords = extractColorsFromWords(item.raw);
 
@@ -783,8 +867,6 @@ function parseList(rawText, sourceName){
       data[status] ??= {};
       data[status][category] ??= [];
       data[status][category].push(item);
-
-      continue;
     }
   }
 
@@ -792,7 +874,7 @@ function parseList(rawText, sourceName){
 }
 
 /** =========================
- *  4) COPY
+ *  4) COPY + PARCELAS
  *  ========================= */
 function showToast(text){
   const el = document.getElementById("toast");
@@ -810,10 +892,10 @@ async function copyText(text){
   }
 }
 
-/* ✅ Só retorna "R$ xxx,xx" da parcela 12x */
-function buildInstallment12Only(item){
+/* retorna somente "R$ xxx,xx" da parcela */
+function installmentOnly(item, n){
   const cash = parseBRL(item.price);
-  const calc = calcParcela12FromCash(cash);
+  const calc = calcInstallmentFromCash(cash, n);
   if (!calc) return "";
   return formatBRL(calc.parcela);
 }
@@ -822,10 +904,13 @@ function buildMessage(item){
   const model = modelForMessage(item);
   const price = item.price || "R$ (consultar)";
   const colorsTxt = colorsTextForMessage(item);
-  const installment12Txt = buildInstallment12Only(item);
 
-  if (item.status === "SEMINOVOS") return TEMPLATE_SEMINOVO(model, price, installment12Txt, colorsTxt);
-  return TEMPLATE_LACRADO(model, price, installment12Txt, colorsTxt);
+  const i6  = installmentOnly(item, 6);
+  const i10 = installmentOnly(item, 10);
+  const i12 = installmentOnly(item, 12);
+
+  if (item.status === "SEMINOVOS") return TEMPLATE_SEMINOVO(model, price, i6, i10, i12, colorsTxt);
+  return TEMPLATE_LACRADO(model, price, i6, i10, i12, colorsTxt);
 }
 
 /** =========================
@@ -861,11 +946,10 @@ function catWeight(cat){
   return 9;
 }
 
-function cardHtml(it, key){
+function cardHtml(it, key, cfg){
   const isSemi = it.status === "SEMINOVOS";
   const badgeText = isSemi ? "Seminovo" : "Lacrado";
   const badgeClass = isSemi ? "seminovo" : "lacrado";
-
   const colorsTxt = colorsTextForMessage(it);
 
   const chips = [];
@@ -876,10 +960,16 @@ function cardHtml(it, key){
   });
 
   const upgradeBadge = it.isUpgrade ? `<div class="badge upgrade">UPGRADE</div>` : "";
-  const installment12 = buildInstallment12Only(it);
+
+  const i6  = installmentOnly(it, 6);
+  const i10 = installmentOnly(it, 10);
+  const i12 = installmentOnly(it, 12);
+
+  const isIphoneCat = (it.category || "").toLowerCase() === "iphone";
+  const iphoneClass = isIphoneCat ? `iphone ${cfg.key === "MANGA" ? "manga" : "tech"}` : "";
 
   return `
-    <article class="card">
+    <article class="card ${iphoneClass}">
       <div class="badge ${badgeClass}">${badgeText}</div>
       ${upgradeBadge}
       <h4 class="name">${escapeHtml(displayTitle(it))}</h4>
@@ -888,7 +978,9 @@ function cardHtml(it, key){
       <div class="price-row">
         <div class="price">
           <span>${escapeHtml(it.price || "Consultar")}</span>
-          ${installment12 ? `<span class="installment">12x de ${escapeHtml(installment12)}</span>` : ""}
+          ${i6  ? `<span class="installment">6x ${escapeHtml(i6)}</span>` : ""}
+          ${i10 ? `<span class="installment">10x ${escapeHtml(i10)}</span>` : ""}
+          ${i12 ? `<span class="installment">12x ${escapeHtml(i12)}</span>` : ""}
         </div>
         <button class="copy" type="button" data-key="${escapeHtml(key)}">📋 Copiar</button>
       </div>
@@ -925,41 +1017,43 @@ function renderBlock(container, cfg, parsed){
 
         const onlyOutros = lineKeys.length === 1 && lineKeys[0] === "OUTROS";
 
+        // ✅ LINHAS como abas fechadas
+        let linesHtml = "";
         if (!onlyOutros){
-          const linesHtml = lineKeys.map(lk=>{
+          linesHtml = lineKeys.map(lk=>{
             const cards = byLine[lk].map((it,i)=>{
               const key = `${cfg.key}::${st}::${cat}::${lk}::${i}`;
               index.set(key, it);
-              return cardHtml(it, key);
+              return cardHtml(it, key, cfg);
             }).join("");
+
             return `
-              <div class="line-block">
-                <div class="line-title">${escapeHtml(lk)}</div>
-                <div class="grid">${cards}</div>
-              </div>
+              <details class="line">
+                <summary>
+                  <div class="line-title">${escapeHtml(lk)}</div>
+                  <div class="line-hint">Toque para abrir</div>
+                </summary>
+                <div class="line-block">
+                  <div class="grid">${cards}</div>
+                </div>
+              </details>
             `;
           }).join("");
+        }else{
+          const cards = items.map((it,i)=>{
+            const key = `${cfg.key}::${st}::${cat}::${i}`;
+            index.set(key, it);
+            return cardHtml(it, key, cfg);
+          }).join("");
 
-          return `
-            <details class="cat">
-              <summary>
-                <div class="cat-left">
-                  <div class="cat-title">${escapeHtml(cat)}</div>
-                  <div class="cat-sub">${items.length} itens</div>
-                </div>
-                <div class="count">Toque para abrir</div>
-              </summary>
-              ${linesHtml}
-            </details>
+          linesHtml = `
+            <div class="line-block">
+              <div class="grid">${cards}</div>
+            </div>
           `;
         }
 
-        const cards = items.map((it,i)=>{
-          const key = `${cfg.key}::${st}::${cat}::${i}`;
-          index.set(key, it);
-          return cardHtml(it, key);
-        }).join("");
-
+        // ✅ CATEGORIAS fechadas ao abrir o link
         return `
           <details class="cat">
             <summary>
@@ -969,9 +1063,7 @@ function renderBlock(container, cfg, parsed){
               </div>
               <div class="count">Toque para abrir</div>
             </summary>
-            <div class="line-block">
-              <div class="grid">${cards}</div>
-            </div>
+            ${linesHtml}
           </details>
         `;
       }).join("");
@@ -997,7 +1089,7 @@ function renderBlock(container, cfg, parsed){
           <div class="store-badge ${cfg.badgeClass}">${cfg.icon} ${escapeHtml(cfg.title)}</div>
           <div class="block-sub">Toque em “Copiar” para mensagem pronta</div>
         </div>
-        <div class="block-sub">Cores exibidas conforme a lista</div>
+        <div class="block-sub">6x • 10x • 12x calculado pela máquina</div>
       </div>
       ${html || `<div class="section"><div class="foot">Nenhum item encontrado nesta lista.</div></div>`}
       <div class="foot">Valores à vista • Parcelamento: consultar</div>
@@ -1032,6 +1124,23 @@ function render(){
   app.appendChild(mangaWrap);
   app.appendChild(techWrap);
 }
+
+/** =========================
+ *  6) ABRIR / FECHAR TODAS (categorias + linhas)
+ *  ========================= */
+let allOpen = false;
+function setAllDetails(open){
+  document.querySelectorAll("details.cat, details.line").forEach(d => {
+    d.open = !!open;
+  });
+  allOpen = !!open;
+  const btn = document.getElementById("toggleAllBtn");
+  btn.textContent = allOpen ? "🔼 Fechar todas" : "🔽 Abrir todas";
+}
+
+document.getElementById("toggleAllBtn").addEventListener("click", ()=>{
+  setAllDetails(!allOpen);
+}, { passive:true });
 
 render();
 </script>
