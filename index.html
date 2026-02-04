@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Lista Apple • MANGA & ImportTech</title>
+  <title>Tabela Consultório do iPhone</title>
 
   <style>
     :root{
@@ -117,6 +117,7 @@
       background: var(--black);
       color: #fff;
       flex-wrap: wrap;
+      text-align:center;
     }
 
     .block-left{
@@ -125,6 +126,8 @@
       gap:10px;
       flex-wrap:wrap;
       min-width: 0;
+      flex: 1;
+      justify-content: center;
     }
 
     .store-badge{
@@ -153,16 +156,38 @@
       max-width: 100%;
       white-space: normal;
     }
+    .block-sub-stack{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:4px;
+      text-align:center;
+    }
 
     .section{padding: 2px 12px 14px;}
     .section-head{
       display:flex;align-items:center;justify-content:space-between;gap:10px;
       margin: 14px 2px 10px;
       flex-wrap:wrap;
+      position: relative;
+      justify-content: center;
     }
-    .section-head h3{ margin:0;font-size:15px;letter-spacing:-.2px; }
-    .h3-blue{color:var(--blue)}
-    .h3-green{color:var(--green)}
+    .section-head h3{
+      margin:0;
+      font-size:15px;
+      letter-spacing:-.2px;
+      padding:6px 14px;
+      border-radius:999px;
+      color:#fff;
+      text-align:center;
+    }
+    .section-head .count{
+      position:absolute;
+      right:0;
+    }
+    .h3-blue{background: var(--black)}
+    .h3-green{background: var(--green)}
+    .h3-upgrade{background: var(--purple)}
     .count{
       color:var(--muted);font-size:12px;
       padding:6px 10px;border-radius:999px;
@@ -252,9 +277,15 @@
       color:#fff;
     }
     .card.iphone.tech{
-      background: var(--techDark);
+      background: var(--tech);
       border-color: rgba(255,255,255,.14);
       color:#fff;
+    }
+    .card.store-tech.status-seminovo{
+      color:#fff;
+    }
+    .card.store-tech.status-seminovo .details{
+      color: rgba(255,255,255,.72);
     }
     .card.iphone.manga .details,
     .card.iphone.tech  .details{
@@ -394,7 +425,7 @@
 <header>
   <div class="header-inner">
     <div class="title">
-      <h1>🍏 Lista Apple • MANGA & ImportTech</h1>
+      <h1>Tabela Consultório do iPhone</h1>
       <small>Valores à vista. Parcelado em até 18x: consultar.</small>
     </div>
 
@@ -475,29 +506,33 @@ IPHONE LACRADO📦
 
 **IPHONE**
 
-📍 IPHONE 13 128gb preto CPO *R$ 3400,00*
+📍 IPHONE 13 128gb preto CPO *R$ 3350,00*
 
-📍 IPHONE 14 128gb preto *R$ 3800,00*
+📍 IPHONE 14 128gb preto *R$ 3750,00*
 
-📍 IPHONE 15 128gb azul e preto *R$ 4150,00*
+📍 IPHONE 16e 128gb preto *R$ 3800,00*
 
 📍 IPHONE 16 128gb azul *R$ 4800,00*
 
-📍 IPHONE 16 256gb branco / rosa e preto *R$ 5400,00*
+📍 IPHONE 16 256gb branco / rosa e preto *R$ 5350,00*
+
+📍 IPHONE 16 Plus 128gb branco *R$ 5100,00*
 
 📍 IPHONE 17 256gb branco / lilás / azul e preto *R$ 6100,00*
 
-📍 IPHONE 17 pro 256gb laranja *R$ 8200,00*
+📍 IPHONE 17 pro 256gb laranja *R$ 8100,00*
+
+📍 IPHONE 17 pro 256gb azul e silver *R$ 8300,00*
 
 📍 IPHONE 17 pro Max 256gb azul e laranja *R$ 8800,00*
 
-📍 IPHONE 17 pro Max 256gb silver *R$ 9000,00*
+📍 IPHONE 17 pro Max 256gb silver *R$ 8900,00*
 
-📍 IPHONE 17 pro Max 512gb laranja *R$ 10200,00*
+📍 IPHONE 17 pro Max 512gb laranja *R$ 10000,00*
 
 IPHONE SEMINOVOS📱
 
-📍 iPhone 12 - 128GB (UPGRADE) grade AB preto ( bateria 100% ) *R$ 1799,00*
+📍 iPhone 12 - 128GB (UPGRADE) grade AB preto ( bateria 100% ) *R$ 1699,00*
 
 📍 iPhone 12 - 128GB (UPGRADE) grade A branco ( bateria 85% ) *R$ 1999,00*
 
@@ -521,8 +556,6 @@ IPHONE SEMINOVOS📱
 
 📍 iPhone 15 pro - 128gb grade A natural ( bateria 90 a 💯 ) *R$ 4400,00*
 
-📍 iPhone 15 PRO MAX  - 256GB (UPGRADE) grade A Natural ( bateria 87% ) *R$4850,00*
-
 📍 iPhone 15 pro max - 512gb grade A natural ( bateria 90 a 💯 ) *R$ 5000,00*
 
 📍 iPhone 16 pro - 256gb grade A natural e desert ( bateria 90 a 💯 ) *R$ 5400,00*
@@ -532,9 +565,6 @@ IPHONE SEMINOVOS📱
 
 const RAW_TECH = String.raw`
 IPHONE SEMINOVOS
-📲 12 64gb A *R$ 1.880,00*
-❤️
-
 📲 12pro 256gb A *R$ 2.500,00*
 🩶
 
@@ -545,10 +575,10 @@ IPHONE SEMINOVOS
 🖤💙
 
 📲 13 128gb A *R$ 2.499,00*
-🖤💙🤍
+🖤💙
 
 📲 13 256gb A *R$ 2.649,00*
-🖤
+💙🤍🖤
 
 📲 13 pro 128gb A *R$ 2.999,00*
 🤍🩵💚🩶
@@ -562,8 +592,8 @@ IPHONE SEMINOVOS
 📲 13 pro max 256gb A *R$ 3.600,00*
 💚🩶
 
-📲 14 128gb A *R$ 2.700,00*
-🩵🖤
+📲 14 128gb A *R$ 2.650,00*
+🩵🖤💜🤍
 
 📲 14 128gb AB *R$ 2.500,00*
 🖤
@@ -571,29 +601,32 @@ IPHONE SEMINOVOS
 📲 14 256gb A *R$ 2.800,00*
 🤍
 
-📲 14 Plus 128gb A *R$ 2.899,00*
-❤️💛💜🩵🖤🤍
+📲 14 Plus 128gb A *R$ 2.849,00*
+❤️💛💜🩵🖤
 
 📲 14 Plus 256gb A *R$ 2.999,00*
-🖤🤍💜
+🖤🤍
 
 📲 14 pro 128gb AB *R$ 3.100,00*
 🖤
 
-📲 14 pro 256gb A *R$ 3.549,00*
+📲 14 pro max 128gb A *R$ 3.850,00*
 🖤💜
 
 📲 15 128gb A *R$ 3.399,00*
-🩷🩵
+🩵
 
 📲 15 Plus 128gb A *R$ 3.650,00*
 🖤🩵🩷
 
-📲 15 pro 256gb A *R$ 4.300,00*
+📲 15 pro 128gb A *R$ 4.050,00* 
+💙
+
+📲 15 pro 256gb A *R$ 4.200,00*
 🤍🩶💙
 
-📲 15 pro max 256gb A *R$ 4.899,00*
-🖤💙🩶
+📲 15 pro max 256gb A *R$ 4.750,00*
+🖤💙
 
 📲 15 pro max 512gb A *R$ 5.049,00*
 🩶💙
@@ -601,20 +634,17 @@ IPHONE SEMINOVOS
 📲 15 pro max 1T A *R$ 5.150,00*
 💙🖤
 
-📱 16 128gb A *R$ 4.199,00*
+📱16 128gb A *R$ 4.199,00*
 🖤 💙
 
 📲 16 plus 128gb A *R$ 4.749,00*
 🖤
 
 📲 16 pro 128gb A *R$ 5.149,00*
-🤍🧡
-
-📲 16 pro max 256gb A *R$ 6.199,00*
 🤍🧡🩶
 
-📲 16pro Max 1T A *R$ 6.499,00*
-🖤
+📲 16 pro max 256gb A *R$ 6.199,00*
+🤍🧡
 `;
 
 /** =========================
@@ -863,10 +893,13 @@ function parseList(rawText, sourceName){
       item.colorsEmoji = emojiColors;
 
       item.isUpgrade = /\bUPGRADE\b/i.test(item.raw) || /\bUPGRADE\b/i.test(item.title);
+      if (item.isUpgrade){
+        item.status = "UPGRADE";
+      }
 
-      data[status] ??= {};
-      data[status][category] ??= [];
-      data[status][category].push(item);
+      data[item.status] ??= {};
+      data[item.status][category] ??= [];
+      data[item.status][category].push(item);
     }
   }
 
@@ -909,7 +942,9 @@ function buildMessage(item){
   const i10 = installmentOnly(item, 10);
   const i12 = installmentOnly(item, 12);
 
-  if (item.status === "SEMINOVOS") return TEMPLATE_SEMINOVO(model, price, i6, i10, i12, colorsTxt);
+  if (item.status === "SEMINOVOS" || item.status === "UPGRADE") {
+    return TEMPLATE_SEMINOVO(model, price, i6, i10, i12, colorsTxt);
+  }
   return TEMPLATE_LACRADO(model, price, i6, i10, i12, colorsTxt);
 }
 
@@ -947,8 +982,9 @@ function catWeight(cat){
 }
 
 function cardHtml(it, key, cfg){
-  const isSemi = it.status === "SEMINOVOS";
-  const badgeText = isSemi ? "Seminovo" : "Lacrado";
+  const isUpgrade = it.status === "UPGRADE";
+  const isSemi = it.status === "SEMINOVOS" || isUpgrade;
+  const badgeText = isUpgrade ? "Upgrade" : (isSemi ? "Seminovo" : "Lacrado");
   const badgeClass = isSemi ? "seminovo" : "lacrado";
   const colorsTxt = colorsTextForMessage(it);
 
@@ -967,9 +1003,11 @@ function cardHtml(it, key, cfg){
 
   const isIphoneCat = (it.category || "").toLowerCase() === "iphone";
   const iphoneClass = isIphoneCat ? `iphone ${cfg.key === "MANGA" ? "manga" : "tech"}` : "";
+  const storeClass = `store-${cfg.key.toLowerCase()}`;
+  const statusClass = isSemi ? "status-seminovo" : "status-lacrado";
 
   return `
-    <article class="card ${iphoneClass}">
+    <article class="card ${iphoneClass} ${storeClass} ${statusClass}">
       <div class="badge ${badgeClass}">${badgeText}</div>
       ${upgradeBadge}
       <h4 class="name">${escapeHtml(displayTitle(it))}</h4>
@@ -990,7 +1028,7 @@ function cardHtml(it, key, cfg){
 
 function renderBlock(container, cfg, parsed){
   const data = parsed.data;
-  const statusOrder = ["LACRADOS","SEMINOVOS"];
+  const statusOrder = ["LACRADOS","SEMINOVOS","UPGRADE"];
   const index = new Map();
 
   const html = statusOrder
@@ -1068,8 +1106,8 @@ function renderBlock(container, cfg, parsed){
         `;
       }).join("");
 
-      const h3Class = st === "LACRADOS" ? "h3-blue" : "h3-green";
-      const label = st === "LACRADOS" ? "📦 Lacrados" : "✨ Seminovos";
+      const h3Class = st === "LACRADOS" ? "h3-blue" : (st === "UPGRADE" ? "h3-upgrade" : "h3-green");
+      const label = st === "LACRADOS" ? "📦 Lacrados" : (st === "UPGRADE" ? "⬆️ Upgrades" : "✨ Seminovos");
 
       return `
         <div class="section">
@@ -1089,7 +1127,10 @@ function renderBlock(container, cfg, parsed){
           <div class="store-badge ${cfg.badgeClass}">${cfg.icon} ${escapeHtml(cfg.title)}</div>
           <div class="block-sub">Toque em “Copiar” para mensagem pronta</div>
         </div>
-        <div class="block-sub">6x • 10x • 12x calculado pela máquina</div>
+        <div class="block-sub block-sub-stack">
+          <span>6x • 10x • 12x calculado pela máquina</span>
+          <span>Parcelamos em até 18x no cartão</span>
+        </div>
       </div>
       ${html || `<div class="section"><div class="foot">Nenhum item encontrado nesta lista.</div></div>`}
       <div class="foot">Valores à vista • Parcelamento: consultar</div>
