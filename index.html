@@ -725,7 +725,7 @@ const DEFAULT_STATUS = "LACRADOS";
 const EMOJI_COLOR_MAP = new Map([
   ["🖤","preto"], ["🤍","branco"], ["💙","azul"], ["🩶","cinza"],
   ["🩷","rosa"], ["💜","roxo"], ["🩵","azul claro"], ["❤️","vermelho"],
-  ["🧡","laranja"], ["💛","amarelo"], ["💚","verde"],
+  ["🧡","dourado"], ["💛","amarelo"], ["💚","verde"],
 ]);
 
 function normalizeLine(s){ return (s||"").replace(/\r/g,"").trim(); }
@@ -776,7 +776,7 @@ function extractColorsFromWords(text){
   const t = (text || "").toLowerCase();
   const COLORS = [
     "preto","branco","azul","rosa","verde","vermelho","amarelo","roxo","cinza","grafite",
-    "prata","dourado","bege","dourado",
+    "prata","laranja","bege","dourado",
     "silver","midnight","starlight","gold","graphite","space gray","spacegrey","natural","desert"
   ];
 
