@@ -17,16 +17,19 @@
       --blue:#0a84ff;
       --purple:#5856d6;
       --green:#34c759;
+      --gold:#b8891f;
 
       --btnBg: rgba(10,132,255,.10);
       --btnStroke: rgba(10,132,255,.25);
 
       --black:#0b0b0f;
-      --manga:#0b3d1a;     /* verde escuro */
-      --tech:#0a84ff;      /* azul */
+      --manga:#0b3d1a;
+      --tech:#0a84ff;
+      --quality:#b8891f;
 
-      --techDark:#061b3a;  /* azul escuro p/ iPhone ImportTech */
-      --mangaDark:#0b0b0f; /* preto p/ iPhone MANGA */
+      --techDark:#061b3a;
+      --mangaDark:#0b0b0f;
+      --qualityDark:#2a1f05;
     }
 
     *{box-sizing:border-box; min-width:0;}
@@ -145,6 +148,7 @@
     }
     .store-badge.manga{ background: var(--manga); }
     .store-badge.tech{ background: var(--tech); }
+    .store-badge.quality{ background: var(--quality); color:#fff; }
 
     .block-sub{
       font-size:12px;
@@ -216,7 +220,6 @@
     .cat-title{margin:0;font-size:13px;font-weight:760;letter-spacing:-.2px;overflow-wrap:anywhere}
     .cat-sub{font-size:12px;color:var(--muted)}
 
-    /* ---- Linhas (LINHA 12, 13...) agora também viram "abas" ---- */
     details.line{
       border:1px solid rgba(0,0,0,.06);
       border-radius: 14px;
@@ -270,7 +273,6 @@
       min-width:0;
     }
 
-    /* ✅ Fundo iPhone por loja */
     .card.iphone.manga{
       background: var(--mangaDark);
       border-color: rgba(255,255,255,.14);
@@ -281,34 +283,42 @@
       border-color: rgba(255,255,255,.14);
       color:#fff;
     }
-    .card.store-tech.status-seminovo{
+    .card.iphone.quality{
+      background: var(--qualityDark);
+      border-color: rgba(255,255,255,.14);
       color:#fff;
     }
-    .card.store-tech.status-seminovo .details{
-      color: rgba(255,255,255,.72);
+    .card.store-tech.status-seminovo,
+    .card.store-quality.status-seminovo{
+      color:#fff;
     }
     .card.iphone.manga .details,
-    .card.iphone.tech  .details{
+    .card.iphone.tech  .details,
+    .card.iphone.quality .details{
       color: rgba(255,255,255,.72);
     }
     .card.iphone.manga .chip,
-    .card.iphone.tech  .chip{
+    .card.iphone.tech  .chip,
+    .card.iphone.quality .chip{
       background: rgba(255,255,255,.10);
       border-color: rgba(255,255,255,.16);
       color: rgba(255,255,255,.85);
     }
     .card.iphone.manga .installment,
-    .card.iphone.tech  .installment{
+    .card.iphone.tech  .installment,
+    .card.iphone.quality .installment{
       color: rgba(255,255,255,.78);
     }
     .card.iphone.manga .copy,
-    .card.iphone.tech  .copy{
+    .card.iphone.tech  .copy,
+    .card.iphone.quality .copy{
       border-color: rgba(255,255,255,.18);
       background: rgba(255,255,255,.10);
       color: rgba(255,255,255,.92);
     }
     .card.iphone.manga .copy:hover,
-    .card.iphone.tech  .copy:hover{
+    .card.iphone.tech  .copy:hover,
+    .card.iphone.quality .copy:hover{
       background: rgba(255,255,255,.14);
     }
 
@@ -440,12 +450,6 @@
 <div class="toast" id="toast">Mensagem copiada ✅</div>
 
 <script>
-/** =========================
- *  0) TAXAS DA MÁQUINA (ajuste aqui quando mudar)
- *  ANTE:
- *  - Estes valores estão calibrados para bater com o valor que você informou da máquina.
- *  - Exemplo (R$ 3400): 6x 612,34 | 10x 376,18 | 12x 318,35
- *  ========================= */
 const CARD_FEES = {
   credit: {
     6:  0.07458819174532672,
@@ -454,7 +458,6 @@ const CARD_FEES = {
   }
 };
 
-/** Converte "R$ 3.450,00" -> 3450.00 */
 function parseBRL(brl){
   if (!brl) return NaN;
   const s = String(brl)
@@ -468,23 +471,14 @@ function formatBRL(n){
   if (!Number.isFinite(n)) return "";
   return n.toLocaleString("pt-BR", { style:"currency", currency:"BRL" });
 }
-
-/**
- * Cliente paga (parcelado): total = vista / (1 - taxa)
- * Parcela = total / n
- */
 function calcInstallmentFromCash(cashValue, n){
   const fee = CARD_FEES.credit?.[n];
   if (!Number.isFinite(cashValue) || !fee) return null;
   const total = cashValue / (1 - fee);
   const parcela = total / n;
-  // máquina costuma mostrar 2 casas
   return { parcela: Number(parcela.toFixed(2)) };
 }
 
-/** =========================
- *  1) LISTAS (ATUALIZE TODO DIA AQUI)
- *  ========================= */
 const RAW_MANGA = String.raw`
 IPHONE LACRADOo📦
 
@@ -508,6 +502,8 @@ IPHONE
 
 📍 *IPHONE 13 pro Max CPO 128g preto e gold* *R$ 4150,00*
 
+📍 *IPHONE 14 128gb preto e azul* *R$ 3850,00*
+
 📍 *IPHONE 14 256gb preto* *R$ 4050,00*
 
 📍 *IPHONE 14 PLUS 128gb preto* *R$ 4000,00*
@@ -520,7 +516,11 @@ IPHONE
 
 📍 *IPHONE 15 PRO CPO 256gb azul* *R$ 5200,00*
 
-📍 *IPHONE 16e 128gb preto* *R$ 3800,00*
+📍 *IPHONE 16e 128gb preto* *R$ 3850,00*
+
+📍 *IPHONE 16 PRO CPO 128gb preto* *R$ 5800,00*
+
+📍 *IPHONE 16 PRO CPO 128gb natural* *R$ 6000,00*
 
 📍 *IPHONE 17 256gb branco, azul preto e lavanda* *R$ 5850,00*
 
@@ -528,19 +528,7 @@ IPHONE
 
 📍 *IPHONE 17 pro 256gb azul* *R$ 8100,00*
 
-📱*17 pro Max 256 eSIM lacrado importado* Azul E LARANJA *R$ 8.699,00*
-
-📱*17 pro Max 256 eSIM lacrado importado* Silver *R$ 8.999,00*
-
-📱*17 pro max 512 eSIM lacrado importado* Laranja *R$ 9.799,00*
-
-📱*17 pro max 512 eSIM lacrado importado* silver *R$ 10.399,00*
-
-📱*17 pro max 1tb eSIM lacrado importado* Laranja *R$ 11.550,00*
-
-📱*17 pro max 1tb eSIM lacrado importado* Azul *R$ 11.899,00*
-
-📱*17 pro max 1tb eSIM lacrado importado* Silver *R$ 11.999,00*
+📍 *IPHONE 17 pro 256gb silver* *R$ 8150,00*
 
  IPHONE SEMINOVOS📱
 
@@ -591,6 +579,7 @@ Aqui está a sua lista atualizada com o acréscimo de R$ 500,00 e a formatação
 📍 *iPhone 15 pro Max - 256gb grade A natural e branco* . ( bateria 90 a 💯 ) *R$ 4700,00*
 
 📍 *iPhone 15 pro Max - 512 grade A preto e azul* ( bateria 90 a 💯 ) *R$ 4800,00*
+
 `;
 
 const RAW_TECH = String.raw`
@@ -598,35 +587,35 @@ IPHONE SEMINOVOS
 
 LISTA IMPORTTECH:
 
-📲 *12 pro 128gb A* — *r$ 2.450,00*
-🧡
-
 📲 *12pro 256gb A* — *r$ 2.600,00*
 🩶
+
+📲 *12 pro 512gb A* — *r$ 2.700,00*
+💙
 
 📲 *12 pro max 256gb A* — *r$ 3.050,00*
 💙
 
 📲 *13 128gb A* — *r$ 2.550,00*
-🖤🩷
+💙
 
 📲 *13 256gb A* — *r$ 2.650,00*
 💙🩷🖤
 
 📲 *13 pro 128gb A* — *r$ 3.050,00*
-🤍
+🩶🧡🤍
 
 📲 *13 pro 256gb A* — *r$ 3.150,00*
 🩵🩶🧡🤍
 
 📲 *13 pro 512gb A* — *r$ 3.300,00*
-🖤💚
+🖤🩵💚
 
 📲 *13 pro max 128gb A* — *r$ 3.399,00*
-🩵🤍
+🤍🧡
 
 📲 *13 pro max 256gb A* — *r$ 3.600,00*
-🩶🧡
+🧡🩵🩶
 
 📲 *13 pro max 512gb A* — *r$ 3.700,00*
 💚
@@ -640,7 +629,7 @@ LISTA IMPORTTECH:
 ❤️💜
 
 📲 *14 plus 128gb A* — *r$ 2.900,00*
-🖤🩵❤️
+🖤🩵❤️💜
 
 📲 *14 plus 256gb A* — *r$ 3.050,00*
 🖤
@@ -649,28 +638,25 @@ LISTA IMPORTTECH:
 💜🖤
 
 📲 *14 pro 256gb A* — *r$ 3.600,00*
-💜🖤
+💜
 
 📲 *14 pro 512gb A* — *r$ 3.750,00*
 🧡🖤🤍💜
 
 📲 *14 pro max 128gb A* — *r$ 3.750,00*
-💜🖤
+🖤
 
 📲 *14 pro max 256gb A* — *r$ 4.000,00*
-💜🧡🖤🤍
+💜🧡🤍🖤
 
 📲 *14 pro max 512gb A* — *r$ 4.100,00*
 💜🖤🧡
 
 📲 *15 128gb A* — *r$ 3.450,00*
-🖤
+🖤💚
 
 📲 *15 Plus 128gb A* — *r$ 3.650,00*
 🖤🩵
-
-📲 *15 plus 256gb A* — *r$ 3.850,00*
-🩵
 
 📲 *15 pro 128gb A* — *r$ 4.000,00*
 💙
@@ -681,8 +667,11 @@ LISTA IMPORTTECH:
 📲 *15 pro max 256gb A* — *r$ 4.800,00*
 💙🤍
 
+📲 *16 128gb A* — *r$ 4.299,00*
+💙
+
 📲 *16 Plus 128gb A* — *r$ 4.750,00*
-💚
+🩷💚
 
 📲 *16 pro 128gb A* — *r$ 5.100,00*
 🤍🩶
@@ -701,9 +690,113 @@ LISTA IMPORTTECH:
 
 `;
 
-/** =========================
- *  2) MENSAGENS (COPIAR) – inclui 6x, 10x, 12x (somente valor da parcela)
- *  ========================= */
+const RAW_QUALITY = String.raw`
+LISTA QUALITY PREMIUM
+
+📱*11 64 lacrado importado CAIXA NORMAL 1 ANO DE GARANTIA APPLE* preto
+*R$ 2.450,00*
+
+📱*13 128 esim+chip físico lacrado importado CAIXA NORMAL*
+preto
+Branco
+*R$ 3.700,00*
+
+📱*13 256 eSIM+chip físico lacrado importado CPO (caixa branca 1 ano de garantia Apple)* Rosa
+*R$ 3.650,00*
+
+📱*13 pro 128 eSIM+chip físico lacrado importado cpo (caixa branca 1 ano de garantia)* Silver
+*R$ 3.750,00*
+
+📱*13 PRO MAX 128GB eSIM+chip físico lacrado importado CPO (caixa branca 1 ano de garantia Apple)*
+Gold
+Preto
+Silver
+💰*4.249,00*
+
+📱*14 plus 128 eSIM+chip físico lacrado importado* Roxo
+Preto
+*R$ 4.099,00*
+
+📱*14 pro max 128 eSIM lacrado importado CPO (caixa branca 1 ano de garantia pela Apple)* Roxo
+Gold
+Silver
+Preto
+*R$ 4.949,00*
+
+📱*15 128 eSIM lacrado importado*
+ROSA
+*R$ 4.299,00*
+
+📱*15 PLUS 128 eSIM lacrado importado*
+PRETO
+AZUL
+*R$ 4.650,00*
+
+📱*15 pro Max 256 eSIM lacrado importado CPO (caixa branca 1 ano de garantia)* branco
+Preto
+Natural
+*R$ 6.250,00*
+
+📱*16 128 eSIM+chip físico lacrado nacional nf ou importado HN*
+Branco
+rosa
+Azul
+*R$ 4.899,00*
+
+📱*16 plus 128 eSIM+chip físico lacrado importado* Verde
+*R$ 5.349,00*
+
+📱*16 pro Max 256esim+chip físico lacrado importado AH/A* Preto
+*R$ 7.899,00*
+
+📱*16 pro Max 512 esim+chip físico lacrado importado (Anatel)* Natural
+*R$ 8.500,00*
+
+🚨**LINHA 17**🚨
+
+📱*17 air 256 eSIM lacrado importado* Branco
+Preto
+*R$ 6.199,00*
+
+📱*17 256 eSIM lacrado importado lacrado importado* Azul
+Preto
+Verde
+Branco
+*R$ 5.999,00*
+
+📱*17 pro 256 eSIM lacrado importado* Laranja
+*R$ 8.199,00*
+
+📱*17 pro 256 eSIM lacrado importado* 
+Azul
+*R$ 8.350,00*
+
+📱*17 pro 512 eSIM lacrado importado* Silver
+*R$ 9.499,00*
+
+📱*17 pro Max 256 eSIM lacrado importado* 🇺🇸🇺🇸🇺🇸🇺🇸
+Laranja
+*R$ 8.799,00*
+
+📱*17 pro Max 256 eSIM lacrado importado* 🇺🇸🇺🇸🇺🇸🇺🇸
+Silver
+*R$ 9.149,00*
+
+📱*17 pro max 512 eSIM lacrado importado* silver
+*R$ 10.350,00*
+
+📱*17 pro max 1tb eSIM lacrado importado* Laranja
+*R$ 11.599,00*
+
+📱*17 pro max 1tb eSIM lacrado importado* 
+Silver
+*R$ 11.999,00*
+
+📱*17 pro Max 2tb eSIM lacrado importado*
+Laranja
+*R$ 12.999,00*
+`;
+
 function installmentsLine(i6, i10, i12){
   const parts = [];
   if (i6)  parts.push(`6x de ${i6}`);
@@ -729,9 +822,6 @@ ${colorsTxt ? `🎨 Cores disponíveis: ${colorsTxt}\n\n` : ""}📦 Seminovos:
 ✅ Capa + Película + Carregador completo de brinde
 ✅ Aparelho 100% original*, super conservado e testado pela nossa equipe técnica`;
 
-/** =========================
- *  3) PARSER
- *  ========================= */
 const DEFAULT_STATUS = "LACRADOS";
 
 const EMOJI_COLOR_MAP = new Map([
@@ -758,7 +848,7 @@ function guessCategoryFromText(line){
   if (t.includes("RELÓG") || t.includes("RELOG")) return "Relógios";
   if (t.includes("WATCH")) return "Relógios";
   if (t.includes("MAC")) return "Mac";
-  if (t.includes("IPHONE")) return "iPhone";
+  if (t.includes("IPHONE") || /^\d/.test(t) || t.includes("LINHA 17")) return "iPhone";
   return null;
 }
 
@@ -842,7 +932,6 @@ function extractCapacity(text){
   return m[0].toUpperCase().replace(/\s+/g,"").replace("T","TB");
 }
 
-/* limpa para exibição: só modelo + capacidade (e cores vêm separado) */
 function cleanModelOnly(text){
   let s = (text || "")
     .replace(/\(.*?\)/g," ")
@@ -863,9 +952,8 @@ function cleanModelOnly(text){
     if (idx > 0) s = s.slice(0, idx).trim();
   }
 
-  // Tech vem "12pro" etc:
   const up = s.toUpperCase();
-  if (!up.includes("IPHONE") && (/^\d{2}/.test(s) || up.startsWith("12") || up.startsWith("13") || up.startsWith("14") || up.startsWith("15") || up.startsWith("16") || up.startsWith("17"))){
+  if (!up.includes("IPHONE") && (/^\d{2}/.test(s) || up.startsWith("11") || up.startsWith("12") || up.startsWith("13") || up.startsWith("14") || up.startsWith("15") || up.startsWith("16") || up.startsWith("17"))){
     s = `iPhone ${s}`.replace(/\s+/g," ").trim();
   }
 
@@ -893,10 +981,9 @@ function modelForMessage(item){
   return cap ? `${model} – ${cap}` : model;
 }
 
-/* ✅ Corrige ImportTech caindo em OUTROS (12pro, 16pro etc) */
 function lineGroupFor(item){
-  const model = cleanModelOnly(item.title || item.raw); // "iPhone 12Pro" / "iPhone 12 Pro"
-  const m = model.match(/iPhone\s*(1[0-9])(?=\D|$)/i);   // pega 12,13,14... mesmo colado em letras
+  const model = cleanModelOnly(item.title || item.raw);
+  const m = model.match(/iPhone\s*(1[0-9])(?=\D|$)/i);
   if (!m) return "OUTROS";
   return `LINHA ${m[1]}`;
 }
@@ -906,7 +993,6 @@ function parseList(rawText, sourceName){
 
   let status = DEFAULT_STATUS;
   let category = "Geral";
-
   const data = {};
 
   for (let i=0; i<lines.length; i++){
@@ -930,11 +1016,39 @@ function parseList(rawText, sourceName){
     if (line === "---" || /^[-—_]{6,}$/.test(line)) continue;
 
     if (/^(📍|📲|📱)\s*/.test(line)){
-      const item = parseItemLine(line);
+      let combinedLine = line;
+      let extraInfo = [];
+      let foundPriceInNextLines = !line.match(/R\$\s*[\d.]+(?:,\d{2})?/i);
+
+      for (let j = i + 1; j < lines.length; j++) {
+        const nextLine = lines[j];
+        if (!nextLine) continue;
+        if (/^(📍|📲|📱)\s*/.test(nextLine)) break;
+        if (isCategoryLine(nextLine)) break;
+        if (guessCategoryFromText(nextLine) && !/^(📍|📲|📱)\s*/.test(nextLine)) break;
+
+        if (/R\$\s*[\d.]+(?:,\d{2})?/i.test(nextLine)) {
+          combinedLine += " " + nextLine;
+          foundPriceInNextLines = true;
+          extraInfo.push(nextLine);
+          continue;
+        }
+
+        extraInfo.push(nextLine);
+      }
+
+      const item = parseItemLine(combinedLine);
+
+      const extraText = extraInfo
+        .filter(x => !/R\$\s*[\d.]+(?:,\d{2})?/i.test(x))
+        .join(" ");
+
+      item.raw = `${item.raw} ${extraText}`.trim();
+      item.title = `${item.title} ${extraText}`.trim();
 
       item.source = sourceName;
       item.status = status;
-      item.category = category;
+      item.category = category === "Geral" ? "iPhone" : category;
       item.lineGroup = lineGroupFor(item);
 
       item.colorsWords = extractColorsFromWords(item.raw);
@@ -952,17 +1066,14 @@ function parseList(rawText, sourceName){
       }
 
       data[item.status] ??= {};
-      data[item.status][category] ??= [];
-      data[item.status][category].push(item);
+      data[item.status][item.category] ??= [];
+      data[item.status][item.category].push(item);
     }
   }
 
   return { data };
 }
 
-/** =========================
- *  4) COPY + PARCELAS
- *  ========================= */
 function showToast(text){
   const el = document.getElementById("toast");
   el.textContent = text || "Mensagem copiada ✅";
@@ -979,7 +1090,6 @@ async function copyText(text){
   }
 }
 
-/* retorna somente "R$ xxx,xx" da parcela */
 function installmentOnly(item, n){
   const cash = parseBRL(item.price);
   const calc = calcInstallmentFromCash(cash, n);
@@ -1002,9 +1112,6 @@ function buildMessage(item){
   return TEMPLATE_LACRADO(model, price, i6, i10, i12, colorsTxt);
 }
 
-/** =========================
- *  5) RENDER
- *  ========================= */
 function escapeHtml(str){
   return String(str || "")
     .replaceAll("&","&amp;")
@@ -1056,7 +1163,7 @@ function cardHtml(it, key, cfg){
   const i12 = installmentOnly(it, 12);
 
   const isIphoneCat = (it.category || "").toLowerCase() === "iphone";
-  const iphoneClass = isIphoneCat ? `iphone ${cfg.key === "MANGA" ? "manga" : "tech"}` : "";
+  const iphoneClass = isIphoneCat ? `iphone ${cfg.cardTone}` : "";
   const storeClass = `store-${cfg.key.toLowerCase()}`;
   const statusClass = isSemi ? "status-seminovo" : "status-lacrado";
 
@@ -1109,7 +1216,6 @@ function renderBlock(container, cfg, parsed){
 
         const onlyOutros = lineKeys.length === 1 && lineKeys[0] === "OUTROS";
 
-        // ✅ LINHAS como abas fechadas
         let linesHtml = "";
         if (!onlyOutros){
           linesHtml = lineKeys.map(lk=>{
@@ -1145,7 +1251,6 @@ function renderBlock(container, cfg, parsed){
           `;
         }
 
-        // ✅ CATEGORIAS fechadas ao abrir o link
         return `
           <details class="cat">
             <summary>
@@ -1209,20 +1314,41 @@ function render(){
 
   const parsedManga = parseList(RAW_MANGA, "MANGA");
   const parsedTech  = parseList(RAW_TECH, "ImportTech");
+  const parsedQuality = parseList(RAW_QUALITY, "QUALITY PREMIUM");
 
   const mangaWrap = document.createElement("div");
   const techWrap  = document.createElement("div");
+  const qualityWrap = document.createElement("div");
 
-  renderBlock(mangaWrap, { key:"MANGA", title:"Aparelhos MANGA", badgeClass:"manga", icon:"🥭" }, parsedManga);
-  renderBlock(techWrap,  { key:"TECH",  title:"Aparelhos ImportTech", badgeClass:"tech",  icon:"⚡" }, parsedTech);
+  renderBlock(mangaWrap, {
+    key:"MANGA",
+    title:"Aparelhos MANGA",
+    badgeClass:"manga",
+    icon:"🥭",
+    cardTone:"manga"
+  }, parsedManga);
+
+  renderBlock(techWrap, {
+    key:"TECH",
+    title:"Aparelhos ImportTech",
+    badgeClass:"tech",
+    icon:"⚡",
+    cardTone:"tech"
+  }, parsedTech);
+
+  renderBlock(qualityWrap, {
+    key:"QUALITY",
+    title:"Aparelhos QUALITY PREMIUM",
+    badgeClass:"quality",
+    icon:"🏆",
+    cardTone:"quality"
+  }, parsedQuality);
 
   app.appendChild(mangaWrap);
   app.appendChild(techWrap);
+  app.appendChild(qualityWrap);
 }
 
-/** =========================
- *  6) ABRIR / FECHAR TODAS (categorias + linhas)
- *  ========================= */
 let allOpen = false;
 function setAllDetails(open){
   document.querySelectorAll("details.cat, details.line").forEach(d => {
