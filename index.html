@@ -26,10 +26,12 @@
       --manga:#0b3d1a;
       --tech:#0a84ff;
       --quality:#b8891f;
+      --sena:#ff6a00;
 
       --techDark:#061b3a;
       --mangaDark:#0b0b0f;
       --qualityDark:#2a1f05;
+      --senaDark:#3a1800;
     }
 
     *{box-sizing:border-box; min-width:0;}
@@ -149,6 +151,7 @@
     .store-badge.manga{ background: var(--manga); }
     .store-badge.tech{ background: var(--tech); }
     .store-badge.quality{ background: var(--quality); color:#fff; }
+    .store-badge.sena{ background: var(--sena); color:#fff; }
 
     .block-sub{
       font-size:12px;
@@ -288,37 +291,50 @@
       border-color: rgba(255,255,255,.14);
       color:#fff;
     }
-    .card.store-tech.status-seminovo,
-    .card.store-quality.status-seminovo{
+    .card.iphone.sena{
+      background: var(--senaDark);
+      border-color: rgba(255,255,255,.14);
       color:#fff;
     }
+
+    .card.store-tech.status-seminovo,
+    .card.store-quality.status-seminovo,
+    .card.store-sena.status-seminovo{
+      color:#fff;
+    }
+
     .card.iphone.manga .details,
-    .card.iphone.tech  .details,
-    .card.iphone.quality .details{
+    .card.iphone.tech .details,
+    .card.iphone.quality .details,
+    .card.iphone.sena .details{
       color: rgba(255,255,255,.72);
     }
     .card.iphone.manga .chip,
-    .card.iphone.tech  .chip,
-    .card.iphone.quality .chip{
+    .card.iphone.tech .chip,
+    .card.iphone.quality .chip,
+    .card.iphone.sena .chip{
       background: rgba(255,255,255,.10);
       border-color: rgba(255,255,255,.16);
       color: rgba(255,255,255,.85);
     }
     .card.iphone.manga .installment,
-    .card.iphone.tech  .installment,
-    .card.iphone.quality .installment{
+    .card.iphone.tech .installment,
+    .card.iphone.quality .installment,
+    .card.iphone.sena .installment{
       color: rgba(255,255,255,.78);
     }
     .card.iphone.manga .copy,
-    .card.iphone.tech  .copy,
-    .card.iphone.quality .copy{
+    .card.iphone.tech .copy,
+    .card.iphone.quality .copy,
+    .card.iphone.sena .copy{
       border-color: rgba(255,255,255,.18);
       background: rgba(255,255,255,.10);
       color: rgba(255,255,255,.92);
     }
     .card.iphone.manga .copy:hover,
-    .card.iphone.tech  .copy:hover,
-    .card.iphone.quality .copy:hover{
+    .card.iphone.tech .copy:hover,
+    .card.iphone.quality .copy:hover,
+    .card.iphone.sena .copy:hover{
       background: rgba(255,255,255,.14);
     }
 
@@ -479,6 +495,13 @@ function calcInstallmentFromCash(cashValue, n){
   return { parcela: Number(parcela.toFixed(2)) };
 }
 
+function normalizeMoneyText(text){
+  const digits = String(text || "").replace(/[^\d]/g,"");
+  if (!digits) return "";
+  const value = Number(digits);
+  return Number.isFinite(value) ? formatBRL(value) : "";
+}
+
 const RAW_MANGA = String.raw`
 IPHONE LACRADOo📦
 
@@ -579,7 +602,6 @@ Aqui está a sua lista atualizada com o acréscimo de R$ 500,00 e a formatação
 📍 *iPhone 15 pro Max - 256gb grade A natural e branco* . ( bateria 90 a 💯 ) *R$ 4700,00*
 
 📍 *iPhone 15 pro Max - 512 grade A preto e azul* ( bateria 90 a 💯 ) *R$ 4800,00*
-
 `;
 
 const RAW_TECH = String.raw`
@@ -687,7 +709,6 @@ LISTA IMPORTTECH:
 
 📲 *16 pro max 1TB A* — *r$ 6.200,00*
 🤍🧡🖤
-
 `;
 
 const RAW_QUALITY = String.raw`
@@ -797,6 +818,170 @@ Laranja
 *R$ 12.999,00*
 `;
 
+const RAW_SENA = String.raw`
+LISTA SENNA IPHONES
+
+Aqui está a sua lista atualizada para o **Consultório**!
+
+Conforme as suas regras, **removi todos os itens de grade AB** e apliquei o acréscimo de **R$ 500,00** em cada valor. Mantive a formatação de preço na linha do modelo e as cores logo abaixo:
+
+📱 *12 Pro 128gb 🇺🇸* — *💰2499*
+🔋85% ha 100%
+💙 Azul
+🩶 Grafite
+————————————————————
+📱 *12 Pro 256gb 🇺🇸* — *💰2650*
+🔋85% ha 100%
+🩶 Grafite
+————————————————————
+📱 *12 Pro Max 128gb 🇺🇸* — *💰2899*
+🔋100%
+🩶 Grafite
+————————————————————
+📱 *13 128gb 🇺🇸* — *💰2599*
+🔋85% ha 100%
+🤍 Branco
+💙 Azul C/Caixa
+————————————————————
+📱 *13 256gb 🇺🇸* — *💰2750*
+🔋85% ha 100%
+🖤 Preto
+💙 Azul
+🩷 Rosa
+🤍 Branco
+————————————————————
+📱 *13 Pro 128gb 🇺🇸* — *💰3050*
+🔋86% h 100%
+🩵 Azul
+💚 Verde
+🤍 Branco
+🧡 Gold
+————————————————————
+📱 *13 Pro 256gb 🇺🇸* — *💰3199*
+🔋85% ha 100%
+🤍 Branco
+🧡 Gold
+🩵 Azul
+🩶 Grafite
+————————————————————
+📱 *13 Pro 512gb 🇺🇸* — *💰3299*
+🔋100%
+🧡 Gold
+🩵 Azul
+————————————————————
+📱 *13 Pro Max 128gb 🇺🇸* — *💰3450*
+🔋85% ha 100%
+🧡 Gold
+🩵 Azul
+🤍 Branco
+————————————————————
+📱 *13 Pro Max 256gb 🇺🇸* — *💰3650*
+🔋85% ha 100%
+🧡 Gold
+🩶 Grafite
+————————————————————
+📱 *14 128gb 🇺🇸* — *💰2750*
+🔋85% ha 100%
+🖤 Preto
+🩵 Azul
+💜 Lilas
+❤️ Vermelho
+🤍 Branco
+————————————————————
+📱 *14 Plus 128gb 🇺🇸* — *💰2899*
+🔋90% ha 100%
+🖤 Preto
+🩵 Azul
+🤍 Branco
+💜 Lilas
+————————————————————
+📱 *14 Pro 128gb 🇺🇸* — *💰3499*
+🔋85% ha 100%
+🖤 Preto
+💜 Roxo
+————————————————————
+📱 *14 Pro 256gb 🇺🇸* — *💰3699*
+🔋87% ha 100%
+💜 Roxo
+🖤 Preto
+————————————————————
+📱 *14 Pro 512gb 🇺🇸* — *💰3799*
+🔋85% ha 100%
+🧡 Gold
+🤍 Branco
+💜 Roxo
+————————————————————
+📱 *14 Pro Max 128gb 🇺🇸* — *💰3850*
+🔋86%
+🖤 Preto
+————————————————————
+📱 *14 Pro Max 256gb 🇺🇸* — *💰4050*
+🔋85% ha 100%
+💜 Roxo
+————————————————————
+📱 *14 Pro Max 512gb 🇺🇸* — *💰4150*
+🔋85% ha 100%
+🖤 Preto
+💜 Roxo
+🧡 Gold
+————————————————————
+📱 *15 128gb 🇺🇸* — *💰3499*
+🔋85% ha 100%
+🖤 Preto
+💚 Verde
+————————————————————
+📱 *15 Plus 128gb 🇺🇸* — *💰3699*
+🔋89% ha 100%
+🖤 Preto
+💚 Verde
+🩵 Azul
+————————————————————
+📱 *15 Pro 128gb 🇺🇸* — *💰4050*
+🔋86% ha 100%
+💙 Azul
+————————————————————
+📱 *15 Pro 256gb 🇺🇸* — *💰4199*
+🔋85% ha 100%
+💙 Azul
+🖤 Preto
+————————————————————
+📱 *15 Pro Max 256gb🇺🇸* — *💰4750*
+🔋85% e 100%
+🖤 Preto
+🩶 Natural
+————————————————————
+📱 *15 Pro Max 512gb 🇺🇸* — *💰4950*
+🔋100%
+🖤 Preto
+————————————————————
+📱 *16 Pro 128gb 🇺🇸* — *💰5099*
+🔋90% pra cima
+🧡 Desert
+🩶 Natural
+————————————————————
+📱 *16 Pro 256gb 🇺🇸* — *💰5350*
+🔋87% ha 100%
+🖤 Preto
+————————————————————
+📱 *16 Pro Max 256gb 🇺🇸* — *💰5950*
+🔋88% pra cima
+🧡 Desert
+🩶 Natural
+🤍 Branco
+🖤 Preto
+————————————————————
+📱 *16 Pro Max 512gb 🇺🇸* — *💰6199*
+🔋90% pra cima
+🩶 Natural
+————————————————————
+📱 *16 Pro Max 1TB 🇺🇸* — *💰6299*
+🔋90% pra cima
+🧡 Desert
+🖤 Preto
+🤍 Branco
+
+`;
+
 function installmentsLine(i6, i10, i12){
   const parts = [];
   if (i6)  parts.push(`6x de ${i6}`);
@@ -870,6 +1055,7 @@ function capitalizeBrand(s){
     .replace(/\bIPHONE\b/ig,"iPhone")
     .replace(/\bIPAD\b/ig,"iPad")
     .replace(/\bAPPLE\b/ig,"Apple")
+    .replace(/\bAPLLE\b/ig,"Apple")
     .replace(/\s+/g," ")
     .trim();
 }
@@ -878,8 +1064,8 @@ function extractColorsFromWords(text){
   const t = (text || "").toLowerCase();
   const COLORS = [
     "preto","branco","azul","rosa","verde","vermelho","amarelo","roxo","cinza","grafite",
-    "prata","laranja","bege","dourado",
-    "silver","midnight","starlight","gold","graphite","space gray","spacegrey","natural","desert"
+    "prata","laranja","bege","dourado","lilas","lilás","natural","desert",
+    "silver","midnight","starlight","gold","graphite","space gray","spacegrey"
   ];
 
   const afterStorage = t.split(/\b(64|128|256|512)\s*gb\b|\b1\s*tb\b|\b2\s*tb\b|\b1\s*t\b/).pop() || t;
@@ -921,7 +1107,10 @@ function colorsTextForMessage(item){
   }
   const merged = parts.join(" / ").split(" / ").map(s=>s.trim()).filter(Boolean);
   const unique = [];
-  for (const m of merged){ if (!unique.includes(m)) unique.push(m); }
+  for (const m of merged){
+    const normalized = m.toLowerCase();
+    if (!unique.some(x => x.toLowerCase() === normalized)) unique.push(m);
+  }
   return unique.join(" / ");
 }
 
@@ -929,7 +1118,7 @@ function extractCapacity(text){
   const s = (text || "");
   const m = s.match(/\b(64|128|256|512)\s*gb\b|\b1\s*tb\b|\b2\s*tb\b|\b1\s*t\b/i);
   if (!m) return "";
-  return m[0].toUpperCase().replace(/\s+/g,"").replace("T","TB");
+  return m[0].toUpperCase().replace(/\s+/g,"").replace(/\b1T\b/i,"1TB");
 }
 
 function cleanModelOnly(text){
@@ -942,7 +1131,18 @@ function cleanModelOnly(text){
     .replace(/\bCPO\b/ig," ")
     .replace(/\bM[EÊ]S\b/ig," ")
     .replace(/\bNOTA\s*FISCAL\b/ig," ")
+    .replace(/\bESIM\+CHIP\s*F[ÍI]SICO\b/ig," ")
+    .replace(/\bESIM\b/ig," ")
+    .replace(/\bCHIP\s*F[ÍI]SICO\b/ig," ")
+    .replace(/\bIMPORTADO\b/ig," ")
+    .replace(/\bNACIONAL\b/ig," ")
+    .replace(/\bCAIXA\s*NORMAL\b/ig," ")
+    .replace(/\bANATEL\b/ig," ")
+    .replace(/\bNF\b/ig," ")
+    .replace(/\bHA\b/ig," ")
+    .replace(/\bAB\b/ig," ")
     .replace(/[–—]/g,"-")
+    .replace(/🇺🇸/g," ")
     .replace(/\s+/g," ")
     .trim();
 
@@ -961,7 +1161,8 @@ function cleanModelOnly(text){
   s = s.replace(/\bPRO\s+MAX\b/ig,"Pro Max")
        .replace(/\bPRO\b/ig,"Pro")
        .replace(/\bPLUS\b/ig,"Plus")
-       .replace(/\bMINI\b/ig,"mini");
+       .replace(/\bMINI\b/ig,"mini")
+       .replace(/\bAIR\b/ig,"Air");
 
   return s;
 }
@@ -1018,7 +1219,6 @@ function parseList(rawText, sourceName){
     if (/^(📍|📲|📱)\s*/.test(line)){
       let combinedLine = line;
       let extraInfo = [];
-      let foundPriceInNextLines = !line.match(/R\$\s*[\d.]+(?:,\d{2})?/i);
 
       for (let j = i + 1; j < lines.length; j++) {
         const nextLine = lines[j];
@@ -1029,7 +1229,6 @@ function parseList(rawText, sourceName){
 
         if (/R\$\s*[\d.]+(?:,\d{2})?/i.test(nextLine)) {
           combinedLine += " " + nextLine;
-          foundPriceInNextLines = true;
           extraInfo.push(nextLine);
           continue;
         }
@@ -1069,6 +1268,54 @@ function parseList(rawText, sourceName){
       data[item.status][item.category] ??= [];
       data[item.status][item.category].push(item);
     }
+  }
+
+  return { data };
+}
+
+function parseSenaList(rawText, sourceName){
+  const lines = rawText.split("\n").map(normalizeLine).filter(Boolean);
+  const blocks = [];
+  let current = [];
+
+  for (const line of lines){
+    if (/^[—-]{8,}$/.test(line)){
+      if (current.length){
+        blocks.push(current);
+        current = [];
+      }
+      continue;
+    }
+    current.push(line);
+  }
+  if (current.length) blocks.push(current);
+
+  const data = { SEMINOVOS: { iPhone: [] } };
+
+  for (const block of blocks){
+    const titleLine = block.find(l => /^📱/.test(l));
+    const priceLine = block.find(l => /^💰/.test(l));
+    if (!titleLine || !priceLine) continue;
+
+    const batteryLine = block.find(l => /^🔋/.test(l)) || "";
+    const colorLines = block.filter(l => /^[🖤🤍💙🩶🩷💜🩵❤️🧡💛💚]/.test(l) && !/AB\s*💰/i.test(l));
+    const rawColorsText = colorLines.map(l => l.replace(/^[🖤🤍💙🩶🩷💜🩵❤️🧡💛💚]\s*/,"").trim()).join(" ");
+
+    const item = {
+      source: sourceName,
+      status: "SEMINOVOS",
+      category: "iPhone",
+      title: titleLine.replace(/^📱\s*/,"").trim(),
+      raw: `${titleLine} ${batteryLine} ${rawColorsText}`.trim(),
+      details: batteryLine ? batteryLine.replace(/^🔋/,"Bateria: ").trim() : "",
+      price: normalizeMoneyText(priceLine),
+      colorsWords: extractColorsFromWords(rawColorsText),
+      colorsEmoji: colorLines.flatMap(extractColorsFromEmojiLine),
+      isUpgrade: false
+    };
+
+    item.lineGroup = lineGroupFor(item);
+    data.SEMINOVOS.iPhone.push(item);
   }
 
   return { data };
@@ -1157,6 +1404,7 @@ function cardHtml(it, key, cfg){
   });
 
   const upgradeBadge = it.isUpgrade ? `<div class="badge upgrade">UPGRADE</div>` : "";
+  const extraDetails = [it.details].filter(Boolean).join(" • ");
 
   const i6  = installmentOnly(it, 6);
   const i10 = installmentOnly(it, 10);
@@ -1172,7 +1420,7 @@ function cardHtml(it, key, cfg){
       <div class="badge ${badgeClass}">${badgeText}</div>
       ${upgradeBadge}
       <h4 class="name">${escapeHtml(displayTitle(it))}</h4>
-      <p class="details">${colorsTxt ? `Cores: ${escapeHtml(colorsTxt)}` : ""}</p>
+      <p class="details">${escapeHtml(extraDetails || (colorsTxt ? `Cores: ${colorsTxt}` : ""))}</p>
       ${chips.length ? `<div class="chips">${chips.join("")}</div>` : ""}
       <div class="price-row">
         <div class="price">
@@ -1315,10 +1563,12 @@ function render(){
   const parsedManga = parseList(RAW_MANGA, "MANGA");
   const parsedTech  = parseList(RAW_TECH, "ImportTech");
   const parsedQuality = parseList(RAW_QUALITY, "QUALITY PREMIUM");
+  const parsedSena = parseSenaList(RAW_SENA, "SENA");
 
   const mangaWrap = document.createElement("div");
   const techWrap  = document.createElement("div");
   const qualityWrap = document.createElement("div");
+  const senaWrap = document.createElement("div");
 
   renderBlock(mangaWrap, {
     key:"MANGA",
@@ -1344,9 +1594,18 @@ function render(){
     cardTone:"quality"
   }, parsedQuality);
 
+  renderBlock(senaWrap, {
+    key:"SENA",
+    title:"Aparelhos Sena",
+    badgeClass:"sena",
+    icon:"🔥",
+    cardTone:"sena"
+  }, parsedSena);
+
   app.appendChild(mangaWrap);
   app.appendChild(techWrap);
   app.appendChild(qualityWrap);
+  app.appendChild(senaWrap);
 }
 
 let allOpen = false;
