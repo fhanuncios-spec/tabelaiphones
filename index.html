@@ -150,7 +150,7 @@
     }
     .store-badge.manga{ background: var(--manga); }
     .store-badge.tech{ background: var(--tech); }
-    .store-badge.quality{ background: var(--quality); color:#fff; }
+    .store-badge.{ background: var(--); color:#fff; }
     .store-badge.sena{ background: var(--sena); color:#fff; }
 
     .block-sub{
@@ -286,8 +286,8 @@
       border-color: rgba(255,255,255,.14);
       color:#fff;
     }
-    .card.iphone.quality{
-      background: var(--qualityDark);
+    .card.iphone.{
+      background: var(--Dark);
       border-color: rgba(255,255,255,.14);
       color:#fff;
     }
@@ -298,20 +298,20 @@
     }
 
     .card.store-tech.status-seminovo,
-    .card.store-quality.status-seminovo,
+    .card.store-.status-seminovo,
     .card.store-sena.status-seminovo{
       color:#fff;
     }
 
     .card.iphone.manga .details,
     .card.iphone.tech .details,
-    .card.iphone.quality .details,
+    .card.iphone. .details,
     .card.iphone.sena .details{
       color: rgba(255,255,255,.72);
     }
     .card.iphone.manga .chip,
     .card.iphone.tech .chip,
-    .card.iphone.quality .chip,
+    .card.iphone. .chip,
     .card.iphone.sena .chip{
       background: rgba(255,255,255,.10);
       border-color: rgba(255,255,255,.16);
@@ -319,13 +319,13 @@
     }
     .card.iphone.manga .installment,
     .card.iphone.tech .installment,
-    .card.iphone.quality .installment,
+    .card.iphone. .installment,
     .card.iphone.sena .installment{
       color: rgba(255,255,255,.78);
     }
     .card.iphone.manga .copy,
     .card.iphone.tech .copy,
-    .card.iphone.quality .copy,
+    .card.iphone. .copy,
     .card.iphone.sena .copy{
       border-color: rgba(255,255,255,.18);
       background: rgba(255,255,255,.10);
@@ -333,7 +333,7 @@
     }
     .card.iphone.manga .copy:hover,
     .card.iphone.tech .copy:hover,
-    .card.iphone.quality .copy:hover,
+    .card.iphone. .copy:hover,
     .card.iphone.sena .copy:hover{
       background: rgba(255,255,255,.14);
     }
@@ -543,17 +543,15 @@ IPHONE
 
 📍 *IPHONE 16e 128gb preto* *R$ 3850,00*
 
-📍 *IPHONE 16 Plus 128gb verde* *R$ 5150,00*
-
 📍 *IPHONE 16 PRO CPO 128gb preto* *R$ 5800,00*
 
 📍 *IPHONE 16 PRO CPO 128gb natural* *R$ 6000,00*
 
-📍 *IPHONE 17 256gb branco, azul preto* *R$ 5850,00*
+📍 *IPHONE 17 256gb , azul preto* *R$ 5850,00*
 
-📍 *IPHONE 17 pro 256gb silver* *R$ 8150,00*
+📍 *IPHONE 17 pro Max 256gb laranja* *R$ 8650,00*
 
-📍 *IPHONE 17 pro Max 256gb azul e laranja* *R$ 8700,00*
+📍 *IPHONE 17 pro Max 256gb azul* *R$ 8700,00*
 
 📍 *IPHONE 17 pro Max 256gb silver* *R$ 8950,00*
 
@@ -712,7 +710,7 @@ LISTA IMPORTTECH:
 
 `;
 
-const RAW_QUALITY = String.raw`
+const RAW_ = String.raw`
 LISTA QUALITY PREMIUM
 
 📱*11 64 lacrado importado CAIXA NORMAL 1 ANO DE GARANTIA APPLE*
@@ -721,7 +719,7 @@ preto
 
 📱*13 128 esim+chip físico lacrado importado CAIXA NORMAL*
 preto
-*R$ 3.700,00*
+*R$ 3.649,00*
 
 📱*13 128 esim+chip físico lacrado importado CAIXA NORMAL*
 Branco
@@ -733,23 +731,31 @@ Rosa
 
 📱*13 pro 128 eSIM+chip físico lacrado importado cpo*
 Silver
-*R$ 3.750,00*
+*R$ 3.650,00*
 
 📱*13 PRO MAX 128GB eSIM+chip físico lacrado importado CPO*
 Gold
-💰*R$ 4.249,00*
+💰*R$ 4.099,00*
 
 📱*13 PRO MAX 128GB eSIM+chip físico lacrado importado CPO*
 Preto
-💰*R$ 4.249,00*
+💰*R$ 4.099,00*
 
 📱*13 PRO MAX 128GB eSIM+chip físico lacrado importado CPO*
 Silver
-💰*R$ 4.249,00*
+💰*R$ 4.099,00*
 
-📱*14 plus 128 eSIM+chip físico lacrado importado*
-Roxo
-*R$ 4.149,00*
+📱*14 128 esim + chip físico lacrado*
+Azul
+*R$ 3.999,00*
+
+📱*14 128 esim + chip físico lacrado*
+Preto
+*R$ 4.050,00*
+
+📱*14 128 esim + chip físico lacrado*
+Branco
+*R$ 4.050,00*
 
 📱*14 plus 128 eSIM+chip físico lacrado importado*
 Preto
@@ -757,23 +763,27 @@ Preto
 
 📱*14 pro max 128 eSIM lacrado importado CPO*
 Roxo
-*R$ 4.999,00*
+*R$ 4.850,00*
 
 📱*14 pro max 128 eSIM lacrado importado CPO*
 Gold
-*R$ 4.999,00*
+*R$ 4.850,00*
 
 📱*14 pro max 128 eSIM lacrado importado CPO*
 Silver
-*R$ 4.999,00*
+*R$ 4.850,00*
 
 📱*14 pro max 128 eSIM lacrado importado CPO*
 Preto
-*R$ 4.999,00*
+*R$ 4.850,00*
 
 📱*15 128 eSIM lacrado importado*
-ROSA
-*R$ 4.299,00*
+Preto
+*R$ 4.249,00*
+
+📱*15 128 eSIM lacrado importado*
+Azul
+*R$ 4.249,00*
 
 📱*15 PLUS 128 eSIM lacrado importado*
 PRETO
@@ -785,35 +795,31 @@ AZUL
 
 📱*15 pro Max 256 eSIM lacrado importado CPO*
 branco
-*R$ 6.250,00*
+*R$ 6.150,00*
 
-📱*15 pro Max 256 eSIM lacrado importado CPO*
+📱*16 128 eSIM+chip físico lacrado nacional/importado*
 Preto
-*R$ 6.250,00*
-
-📱*15 pro Max 256 eSIM lacrado importado CPO*
-Natural
-*R$ 6.250,00*
-
-📱*16 128 eSIM+chip físico lacrado nacional/importado*
-Branco
-*R$ 4.899,00*
-
-📱*16 128 eSIM+chip físico lacrado nacional/importado*
-rosa
-*R$ 4.899,00*
+*R$ 4.849,00*
 
 📱*16 128 eSIM+chip físico lacrado nacional/importado*
 Azul
-*R$ 4.899,00*
+*R$ 4.849,00*
+
+📱*16 256 esim+ chip físico lacrado*
+Preto
+*R$ 5.450,00*
 
 📱*16 plus 128 eSIM+chip físico lacrado importado*
 Verde
 *R$ 5.349,00*
 
+📱*16 plus 128 eSIM+chip físico lacrado importado*
+Azul
+*R$ 5.450,00*
+
 📱*16 pro Max 256esim+chip físico lacrado importado*
 DESERT
-*R$ 7.899,00*
+*R$ 7.650,00*
 
 📱*16 pro Max 512 esim+chip físico lacrado importado*
 Natural
@@ -823,23 +829,35 @@ Natural
 
 📱*17 air 256 eSIM lacrado importado*
 Branco
-*R$ 6.199,00*
+*R$ 6.049,00*
 
 📱*17 air 256 eSIM lacrado importado*
 Preto
-*R$ 6.199,00*
+*R$ 6.049,00*
+
+📱*17 air 256 eSIM lacrado importado*
+Azul
+*R$ 6.049,00*
 
 📱*17 256 eSIM lacrado importado*
 Azul
-*R$ 5.999,00*
+*R$ 5.049,00*
 
 📱*17 256 eSIM lacrado importado*
 Verde
-*R$ 5.999,00*
+*R$ 5.049,00*
 
 📱*17 256 eSIM lacrado importado*
 Branco
-*R$ 5.999,00*
+*R$ 5.049,00*
+
+📱*17 256 eSIM lacrado importado*
+Preto
+*R$ 5.049,00*
+
+📱*17 256 eSIM lacrado importado*
+Lavanda
+*R$ 5.049,00*
 
 📱*17 pro 256 eSIM lacrado importado*
 Laranja
@@ -849,21 +867,29 @@ Laranja
 Azul
 *R$ 8.350,00*
 
-📱*17 pro 512 eSIM lacrado importado*
+📱*17 pro 256 eSIM lacrado importado*
 Silver
-*R$ 9.499,00*
+*R$ 8.299,00*
 
 📱*17 pro Max 256 eSIM lacrado importado* 🇺🇸
 Laranja
 *R$ 8.799,00*
 
 📱*17 pro Max 256 eSIM lacrado importado* 🇺🇸
+Azul
+*R$ 8.849,00*
+
+📱*17 pro Max 256 eSIM lacrado importado* 🇺🇸
 Silver
 *R$ 9.149,00*
 
 📱*17 pro max 512 eSIM lacrado importado*
-silver
-*R$ 10.399,00*
+Laranja
+*R$ 10.199,00*
+
+📱*17 pro max 512 eSIM lacrado importado*
+Azul
+*R$ 10.550,00*
 
 📱*17 pro max 1tb eSIM lacrado importado*
 Laranja
@@ -871,11 +897,15 @@ Laranja
 
 📱*17 pro max 1tb eSIM lacrado importado*
 Silver
+*R$ 12.099,00*
+
+📱*17 pro max 1tb eSIM lacrado importado*
+azul
 *R$ 11.999,00*
 
 📱*17 pro Max 2tb eSIM lacrado importado*
 Laranja
-*R$ 12.999,00*
+*R$ 12.699,00*
 
 `;
 
