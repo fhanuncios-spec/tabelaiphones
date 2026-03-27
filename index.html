@@ -104,6 +104,97 @@
     .toggleAll:hover{background: rgba(255,255,255,.92)}
 
     .wrap{max-width:1100px;margin:0 auto;padding:18px 14px 42px;width:100%;}
+
+    .filters{
+      margin-bottom:16px;
+      border:1px solid var(--stroke);
+      border-radius:22px;
+      background: rgba(255,255,255,.72);
+      box-shadow: 0 10px 28px rgba(0,0,0,.06);
+      overflow:hidden;
+    }
+    .filters-head{
+      padding:14px 14px 10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      border-bottom:1px solid var(--stroke);
+      background: rgba(255,255,255,.55);
+    }
+    .filters-head h2{
+      margin:0;
+      font-size:15px;
+      letter-spacing:-.2px;
+    }
+    .filters-head .pill{
+      box-shadow:none;
+      background: rgba(245,245,247,.95);
+    }
+    .filters-grid{
+      padding:14px;
+      display:grid;
+      grid-template-columns: repeat(6, minmax(120px, 1fr));
+      gap:10px;
+    }
+    .filter-field{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .filter-field.wide{
+      grid-column: span 2;
+    }
+    .filter-field label{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:700;
+    }
+    .filter-field input,
+    .filter-field select{
+      width:100%;
+      appearance:none;
+      border:1px solid var(--stroke);
+      background:#fff;
+      color:var(--text);
+      font-size:14px;
+      padding:12px 13px;
+      border-radius:14px;
+      outline:none;
+      box-shadow: 0 4px 14px rgba(0,0,0,.04);
+    }
+    .filter-actions{
+      padding:0 14px 14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .filter-buttons{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .btn-clean{
+      appearance:none;
+      border:1px solid var(--stroke);
+      background:#fff;
+      color:var(--text);
+      font-weight:800;
+      font-size:13px;
+      padding:11px 14px;
+      border-radius:12px;
+      cursor:pointer;
+      box-shadow: 0 6px 18px rgba(0,0,0,.05);
+    }
+    .btn-clean:hover{background:#fafafa}
+    .filters-note{
+      font-size:12px;
+      color:var(--muted);
+    }
+
     .block{
       border:1px solid var(--stroke);
       border-radius: 22px;
@@ -259,8 +350,18 @@
       min-width:0;
       grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
     }
+    @media (max-width:700px){
+      .filters-grid{
+        grid-template-columns: repeat(2, minmax(0,1fr));
+      }
+      .filter-field.wide{
+        grid-column: span 2;
+      }
+    }
     @media (max-width:360px){
       .grid{ grid-template-columns: 1fr; }
+      .filters-grid{ grid-template-columns: 1fr; }
+      .filter-field.wide{ grid-column: span 1; }
     }
 
     .card{
@@ -436,6 +537,19 @@
       padding: 14px 0 8px;
     }
 
+    .empty-state{
+      display:none;
+      margin:18px 0;
+      border:1px dashed var(--stroke);
+      border-radius:20px;
+      background: rgba(255,255,255,.7);
+      padding:26px 18px;
+      text-align:center;
+      color:var(--muted);
+      box-shadow: 0 10px 28px rgba(0,0,0,.04);
+    }
+    .empty-state.show{display:block}
+
     .toast{
       position: fixed;
       left: 50%;
@@ -470,7 +584,73 @@
   </div>
 </header>
 
-<div class="wrap" id="app"></div>
+<div class="wrap">
+  <section class="filters">
+    <div class="filters-head">
+      <h2>Filtros de pesquisa</h2>
+      <div class="pill" id="resultsPill">Mostrando todos</div>
+    </div>
+
+    <div class="filters-grid">
+      <div class="filter-field wide">
+        <label for="filterSearch">Pesquisa</label>
+        <input id="filterSearch" type="text" placeholder="Buscar por modelo, cor, loja, linha..." />
+      </div>
+
+      <div class="filter-field">
+        <label for="filterModel">Modelo</label>
+        <select id="filterModel">
+          <option value="">Todos</option>
+        </select>
+      </div>
+
+      <div class="filter-field">
+        <label for="filterCapacity">Gigas</label>
+        <select id="filterCapacity">
+          <option value="">Todos</option>
+        </select>
+      </div>
+
+      <div class="filter-field">
+        <label for="filterColor">Cores</label>
+        <select id="filterColor">
+          <option value="">Todas</option>
+        </select>
+      </div>
+
+      <div class="filter-field">
+        <label for="filterStatus">Estado</label>
+        <select id="filterStatus">
+          <option value="">Todos</option>
+          <option value="LACRADOS">Lacrados</option>
+          <option value="SEMINOVOS">Seminovos</option>
+          <option value="UPGRADE">Upgrade</option>
+        </select>
+      </div>
+
+      <div class="filter-field">
+        <label for="filterMin">Valor mínimo</label>
+        <input id="filterMin" type="text" inputmode="numeric" placeholder="Ex: 3000" />
+      </div>
+
+      <div class="filter-field">
+        <label for="filterMax">Valor máximo</label>
+        <input id="filterMax" type="text" inputmode="numeric" placeholder="Ex: 5000" />
+      </div>
+    </div>
+
+    <div class="filter-actions">
+      <div class="filter-buttons">
+        <button class="btn-clean" id="clearFiltersBtn" type="button">Limpar filtros</button>
+      </div>
+      <div class="filters-note">Pesquisa por texto + modelo + capacidade + cor + faixa de valor + status.</div>
+    </div>
+  </section>
+
+  <div id="app"></div>
+  <div class="empty-state" id="emptyState">Nenhum item encontrado com os filtros selecionados.</div>
+</div>
+
 <div class="toast" id="toast">Mensagem copiada ✅</div>
 
 <script>
@@ -622,7 +802,6 @@ Aqui está a sua lista de **IPHONE VITRINE** atualizada para o **Consultório**,
 📍 iPhone 16 pro Max - 256 grade A desert / natural e branco. ( bateria 90 a 💯 ) R$ 5.800,00
 
 📍 iPhone 16 pro Max - 512gb grade A desert / natural . ( bateria 90 a 💯 ) R$ 6.000,00
-
 `;
 
 const RAW_TECH = String.raw`
@@ -728,7 +907,6 @@ LISTA IMPORTTECH:
 
 📲 17 pro 256gb A — r$ 8.100,00
 🧡💙
-
 `;
 
 const RAW_QUALITY = String.raw`
@@ -903,7 +1081,6 @@ Laranja
 
 💎MACBOOK PRO M5 14” 16GB / 1tB
 🎨  BLACK
-
 💰R$ 14.200
 
       💰_ APPLE WATCH _💰
@@ -938,7 +1115,6 @@ Laranja
 🎨 BLACK
 🎨 SILVER
 🎨 SPACE
-
 🎨 GOLD
 💰R$ 3.049,00
 
@@ -953,7 +1129,6 @@ Laranja
 
 ⌚️ APPLE WATCH SE 2° 44MM GPS
 🎨 SILVER
-
 💰R$ 2.299,00
 
 ⌚️ APPLE WATCH SE 2° 40MM GPS
@@ -1121,7 +1296,6 @@ iPhone
 📱17 PRO 256GB
 🎨LARANJA 🔋100% (MARCAS NA TRASEIRA)
 💰R$ 7.499,00
-
 `;
 
 const RAW_SENA = String.raw`
@@ -1419,11 +1593,11 @@ function guessCategoryFromText(line){
 }
 
 function isItemStart(line){
-  return /^(📍|📲|📱|💎|⌚|⌚️|🎧)\s*/.test(line);
+  return /^(📍|📲|📱|💎|💻|⌚|⌚️|🎧)\s*/.test(line);
 }
 
 function parseItemLine(line){
-  const raw = line.replace(/^(📍|📲|📱|💎|⌚|⌚️|🎧)\s*/, "").trim();
+  const raw = line.replace(/^(📍|📲|📱|💎|💻|⌚|⌚️|🎧)\s*/, "").trim();
   const priceMatch = raw.match(/[💰💵]?\s*R\$\s*[\d.]+(?:,\d{2})?/i);
   const price = priceMatch ? priceMatch[0].replace(/[💰💵]/g, "").trim() : "";
   const name = priceMatch ? raw.replace(priceMatch[0], "").replace(/\*+/g, "").trim() : raw;
@@ -1502,11 +1676,12 @@ function colorsTextForMessage(item){
 
 function extractCapacity(text){
   const s = (text || "");
-  const m = s.match(/\b(40|42|44|46|64|128|256|512)\s*(gb|g|mm)\b|\b1\s*tb\b|\b2\s*tb\b|\b1\s*t\b/i);
+  const m = s.match(/\b(40|42|44|46|64|128|256|512)\s*(gb|g|mm)\b|\b1\s*tb\b|\b2\s*tb\b|\b1\s*tera\b|\b1\s*t\b/i);
   if (!m) return "";
   return m[0]
     .toUpperCase()
     .replace(/\s+/g, "")
+    .replace(/\b1TERA\b/i, "1TB")
     .replace(/\b1T\b/i, "1TB")
     .replace(/G$/, "GB");
 }
@@ -1536,7 +1711,7 @@ function cleanModelOnly(text){
     .replace(/\bAB\b/ig, " ")
     .replace(/\bLACRADO\b/ig, " ")
     .replace(/[–—]/g, "-")
-    .replace(/🇺🇸/g, " ")
+    .replace(/🇺🇸|🇯🇵/g, " ")
     .replace(/\s+/g, " ")
     .trim();
 
@@ -1578,12 +1753,16 @@ function modelForMessage(item){
   return cap ? `${model} – ${cap}` : model;
 }
 
+function modelFilterValue(item){
+  return cleanModelOnly(item.title || item.raw);
+}
+
 function lineGroupFor(item){
   const category = (item.category || "").toLowerCase();
   const model = cleanModelOnly(item.title || item.raw);
 
   if (category === "iphone"){
-    const m = model.match(/iPhone\s*(1[0-9])(?=\D|$)/i);
+    const m = model.match(/iPhone\s*(1[0-9][A-Z]?)/i);
     if (!m) return "OUTROS";
     return `LINHA ${m[1]}`;
   }
@@ -1592,6 +1771,18 @@ function lineGroupFor(item){
   if (category.includes("airpods")) return "AIRPODS";
   if (category.includes("ipad")) return "IPADS";
   return "OUTROS";
+}
+
+function normalizeText(text){
+  return String(text || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+}
+
+function uniqueArray(arr){
+  return [...new Set(arr.filter(Boolean))];
 }
 
 function parseList(rawText, sourceName){
@@ -1722,6 +1913,49 @@ function parseSenaList(rawText, sourceName){
   return { data };
 }
 
+function flattenParsed(parsed){
+  const items = [];
+  for (const status of Object.keys(parsed.data || {})){
+    const cats = parsed.data[status] || {};
+    for (const cat of Object.keys(cats)){
+      items.push(...cats[cat]);
+    }
+  }
+  return items;
+}
+
+function enrichItem(item){
+  const model = modelFilterValue(item);
+  const capacity = extractCapacity(item.title || item.raw);
+  const colorList = uniqueArray([
+    ...(item.colorsWords || []),
+    ...(item.colorsEmoji || []).map(e => EMOJI_COLOR_MAP.get(e)).filter(Boolean)
+  ]);
+  const priceNumber = parseBRL(item.price);
+  const searchBlob = normalizeText([
+    item.source,
+    item.status,
+    item.category,
+    item.title,
+    item.raw,
+    item.details,
+    model,
+    capacity,
+    colorList.join(" "),
+    colorsTextForMessage(item),
+    displayTitle(item)
+  ].filter(Boolean).join(" "));
+
+  return {
+    ...item,
+    _model: model,
+    _capacity: capacity,
+    _colors: colorList,
+    _priceNumber: priceNumber,
+    _searchBlob: searchBlob
+  };
+}
+
 function showToast(text){
   const el = document.getElementById("toast");
   el.textContent = text || "Mensagem copiada ✅";
@@ -1824,7 +2058,18 @@ function cardHtml(it, key, cfg){
   const statusClass = isSemi ? "status-seminovo" : "status-lacrado";
 
   return `
-    <article class="card ${toneClass} ${storeClass} ${statusClass}">
+    <article
+      class="card ${toneClass} ${storeClass} ${statusClass}"
+      data-card="1"
+      data-source="${escapeHtml(it.source || "")}"
+      data-status="${escapeHtml(it.status || "")}"
+      data-category="${escapeHtml(it.category || "")}"
+      data-model="${escapeHtml(it._model || "")}"
+      data-capacity="${escapeHtml(it._capacity || "")}"
+      data-colors="${escapeHtml((it._colors || []).join("|"))}"
+      data-price="${escapeHtml(String(it._priceNumber || ""))}"
+      data-search="${escapeHtml(it._searchBlob || "")}"
+    >
       <div class="badge ${badgeClass}">${badgeText}</div>
       ${upgradeBadge}
       <h4 class="name">${escapeHtml(displayTitle(it))}</h4>
@@ -1882,7 +2127,7 @@ function renderBlock(container, cfg, parsed){
             }).join("");
 
             return `
-              <details class="line">
+              <details class="line" data-line="1">
                 <summary>
                   <div class="line-title">${escapeHtml(lk)}</div>
                   <div class="line-hint">Toque para abrir</div>
@@ -1908,7 +2153,7 @@ function renderBlock(container, cfg, parsed){
         }
 
         return `
-          <details class="cat">
+          <details class="cat" data-cat="1">
             <summary>
               <div class="cat-left">
                 <div class="cat-title">${escapeHtml(cat)}</div>
@@ -1925,7 +2170,7 @@ function renderBlock(container, cfg, parsed){
       const label = st === "LACRADOS" ? "📦 Lacrados" : (st === "UPGRADE" ? "⬆️ Upgrades" : "✨ Seminovos");
 
       return `
-        <div class="section">
+        <div class="section" data-section="1">
           <div class="section-head">
             <h3 class="${h3Class}">${label}</h3>
             <div class="count">${total} itens</div>
@@ -1936,7 +2181,7 @@ function renderBlock(container, cfg, parsed){
     }).join("");
 
   container.innerHTML = `
-    <div class="block">
+    <div class="block" data-block="1">
       <div class="block-head">
         <div class="block-left">
           <div class="store-badge ${cfg.badgeClass}">${cfg.icon} ${escapeHtml(cfg.title)}</div>
@@ -1962,6 +2207,132 @@ function renderBlock(container, cfg, parsed){
   }, { passive:true });
 }
 
+function populateSelect(select, values, placeholder){
+  select.innerHTML = "";
+  const first = document.createElement("option");
+  first.value = "";
+  first.textContent = placeholder;
+  select.appendChild(first);
+
+  values.forEach(value => {
+    const opt = document.createElement("option");
+    opt.value = value;
+    opt.textContent = value;
+    select.appendChild(opt);
+  });
+}
+
+function formatCountText(n){
+  return `${n} item${n === 1 ? "" : "s"} encontrado${n === 1 ? "" : "s"}`;
+}
+
+function parseInputMoney(value){
+  const digits = String(value || "").replace(/[^\d]/g, "");
+  return digits ? Number(digits) : NaN;
+}
+
+function buildFilterOptions(items){
+  const models = uniqueArray(items.map(it => it._model)).sort((a,b) => a.localeCompare(b, "pt-BR"));
+  const capacities = uniqueArray(items.map(it => it._capacity)).sort((a,b) => {
+    const na = parseInt((a.match(/\d+/) || [])[0] || "0", 10);
+    const nb = parseInt((b.match(/\d+/) || [])[0] || "0", 10);
+    return na - nb || a.localeCompare(b, "pt-BR");
+  });
+  const colors = uniqueArray(items.flatMap(it => it._colors || [])).sort((a,b) => a.localeCompare(b, "pt-BR"));
+
+  populateSelect(document.getElementById("filterModel"), models, "Todos");
+  populateSelect(document.getElementById("filterCapacity"), capacities, "Todos");
+  populateSelect(document.getElementById("filterColor"), colors, "Todas");
+}
+
+function getCurrentFilters(){
+  return {
+    search: normalizeText(document.getElementById("filterSearch").value),
+    model: document.getElementById("filterModel").value,
+    capacity: document.getElementById("filterCapacity").value,
+    color: normalizeText(document.getElementById("filterColor").value),
+    status: document.getElementById("filterStatus").value,
+    min: parseInputMoney(document.getElementById("filterMin").value),
+    max: parseInputMoney(document.getElementById("filterMax").value)
+  };
+}
+
+function cardMatchesFilters(card, filters){
+  const search = card.dataset.search || "";
+  const model = card.dataset.model || "";
+  const capacity = card.dataset.capacity || "";
+  const colors = normalizeText((card.dataset.colors || "").replaceAll("|", " "));
+  const status = card.dataset.status || "";
+  const price = Number(card.dataset.price || 0);
+
+  if (filters.search && !search.includes(filters.search)) return false;
+  if (filters.model && model !== filters.model) return false;
+  if (filters.capacity && capacity !== filters.capacity) return false;
+  if (filters.color && !colors.includes(filters.color)) return false;
+  if (filters.status && status !== filters.status) return false;
+  if (Number.isFinite(filters.min) && price < filters.min) return false;
+  if (Number.isFinite(filters.max) && price > filters.max) return false;
+
+  return true;
+}
+
+function applyFilters(){
+  const filters = getCurrentFilters();
+  const cards = [...document.querySelectorAll("[data-card='1']")];
+  let visibleCards = 0;
+
+  cards.forEach(card => {
+    const visible = cardMatchesFilters(card, filters);
+    card.style.display = visible ? "" : "none";
+    if (visible) visibleCards += 1;
+  });
+
+  document.querySelectorAll("[data-line='1']").forEach(line => {
+    const hasVisible = [...line.querySelectorAll("[data-card='1']")].some(card => card.style.display !== "none");
+    line.style.display = hasVisible ? "" : "none";
+  });
+
+  document.querySelectorAll("[data-cat='1']").forEach(cat => {
+    const hasVisible = [...cat.querySelectorAll("[data-card='1']")].some(card => card.style.display !== "none");
+    cat.style.display = hasVisible ? "" : "none";
+  });
+
+  document.querySelectorAll("[data-section='1']").forEach(section => {
+    const hasVisible = [...section.querySelectorAll("[data-card='1']")].some(card => card.style.display !== "none");
+    section.style.display = hasVisible ? "" : "none";
+  });
+
+  document.querySelectorAll("[data-block='1']").forEach(block => {
+    const hasVisible = [...block.querySelectorAll("[data-card='1']")].some(card => card.style.display !== "none");
+    block.style.display = hasVisible ? "" : "none";
+  });
+
+  document.getElementById("resultsPill").textContent = visibleCards ? formatCountText(visibleCards) : "Nenhum item encontrado";
+  document.getElementById("emptyState").classList.toggle("show", visibleCards === 0);
+}
+
+function bindFilters(items){
+  buildFilterOptions(items);
+
+  const ids = ["filterSearch","filterModel","filterCapacity","filterColor","filterStatus","filterMin","filterMax"];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    const evt = el.tagName === "SELECT" ? "change" : "input";
+    el.addEventListener(evt, applyFilters, { passive:true });
+  });
+
+  document.getElementById("clearFiltersBtn").addEventListener("click", () => {
+    document.getElementById("filterSearch").value = "";
+    document.getElementById("filterModel").value = "";
+    document.getElementById("filterCapacity").value = "";
+    document.getElementById("filterColor").value = "";
+    document.getElementById("filterStatus").value = "";
+    document.getElementById("filterMin").value = "";
+    document.getElementById("filterMax").value = "";
+    applyFilters();
+  }, { passive:true });
+}
+
 function render(){
   formatUpdatedPill();
 
@@ -1972,6 +2343,21 @@ function render(){
   const parsedTech = parseList(RAW_TECH, "ImportTech");
   const parsedQuality = parseList(RAW_QUALITY, "QUALITY PREMIUM");
   const parsedSena = parseSenaList(RAW_SENA, "SENA");
+
+  [parsedManga, parsedTech, parsedQuality, parsedSena].forEach(parsed => {
+    for (const status of Object.keys(parsed.data || {})){
+      for (const cat of Object.keys(parsed.data[status] || {})){
+        parsed.data[status][cat] = parsed.data[status][cat].map(enrichItem);
+      }
+    }
+  });
+
+  const allItems = [
+    ...flattenParsed(parsedManga),
+    ...flattenParsed(parsedTech),
+    ...flattenParsed(parsedQuality),
+    ...flattenParsed(parsedSena)
+  ];
 
   const mangaWrap = document.createElement("div");
   const techWrap = document.createElement("div");
@@ -2014,6 +2400,9 @@ function render(){
   app.appendChild(techWrap);
   app.appendChild(qualityWrap);
   app.appendChild(senaWrap);
+
+  bindFilters(allItems);
+  applyFilters();
 }
 
 let allOpen = false;
