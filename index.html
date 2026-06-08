@@ -84,6 +84,13 @@
     .btn-whats{background:linear-gradient(135deg,var(--green),#7dffbf);color:#03110a}
     .btn-parcel{background:#101612;color:#fff}
 
+    .entry-calc{margin-top:12px;border:1px solid rgba(16,20,17,.08);background:#fbfcfb;border-radius:18px;padding:11px;display:grid;gap:9px}
+    .entry-calc-title{font-size:12px;font-weight:950;color:#1b2820;letter-spacing:-.02em}
+    .entry-row{display:grid;grid-template-columns:1fr 92px;gap:8px}
+    .entry-row input,.entry-row select{width:100%;border:1px solid rgba(16,20,17,.12);background:#fff;border-radius:14px;padding:11px 10px;font-weight:800;font-size:13px;outline:none}
+    .entry-result{font-size:12px;line-height:1.35;color:#5d6b62;background:#f4f8f5;border:1px solid rgba(13,168,94,.12);border-radius:14px;padding:9px}
+    .entry-result b{color:#063e2c;font-size:13px}
+
     .finance-box{background:linear-gradient(135deg,#07100b,#11261a);color:#fff;border-radius:30px;padding:22px;border:1px solid rgba(255,255,255,.12);overflow:hidden;position:relative}
     .finance-box:before{content:"";position:absolute;inset:-70px -80px auto auto;width:220px;height:220px;background:radial-gradient(circle,rgba(0,214,125,.24),transparent 65%)}
     
@@ -106,7 +113,7 @@
     .close{border:0;background:#f1f3f1;width:40px;height:40px;border-radius:14px;font-size:20px;font-weight:900;cursor:pointer}
     .select-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
     .select-row label{display:grid;gap:7px;color:#5e6b63;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.05em}
-    .select-row select{border:1px solid rgba(16,20,17,.12);border-radius:16px;padding:13px;background:#fafafa;font-weight:800}
+    .select-row select,.select-row input{border:1px solid rgba(16,20,17,.12);border-radius:16px;padding:13px;background:#fafafa;font-weight:800;width:100%}
     .parcel-list{display:grid;gap:8px}
     .parcel-item{display:grid;grid-template-columns:58px 1fr auto;gap:9px;align-items:center;background:#f7f9f7;border:1px solid rgba(16,20,17,.08);border-radius:16px;padding:10px}
     .parcel-item b{font-size:14px}.parcel-item span{font-size:12px;color:var(--muted)}.parcel-item strong{font-size:14px;white-space:nowrap}
@@ -159,10 +166,10 @@
         <div>
           <span class="eyebrow">iPhones seminovos e lacrados</span>
           <h1>Seu próximo iPhone com segurança, garantia e atendimento rápido.</h1>
-          <p class="lead">Escolha o modelo, veja as opções disponíveis e simule o parcelamento em até 18x no cartão. Seminovos com 6 meses de garantia e lacrados com 1 ano.</p>
+          <p class="lead">Escolha o modelo, veja as opções disponíveis e chame nossa equipe direto no WhatsApp. Seminovos com 6 meses de garantia e lacrados com 1 ano.</p>
           <div class="hero-actions">
             <a class="btn btn-primary" href="#catalogo">Ver catálogo</a>
-            <a class="btn btn-dark" href="#parcelamento">Ver parcelamento</a>
+            <a class="btn btn-dark" href="#catalogo">Ver ofertas</a>
           </div>
         </div>
         <div class="hero-photo">
@@ -202,7 +209,7 @@
         <button class="close" onclick="hideParcel()">×</button>
       </div>
       <div class="select-row">
-        <label>Bandeira<select id="brandSelect" onchange="renderParcelas()"><option value="visa">Visa/Master</option><option value="elo">Elo</option><option value="amex">Amex</option></select></label>
+        <label>Bandeira<select id="brandSelect" onchange="renderParcelas()"><option value="visa">Visa/Master</option><option value="elo">Elo</option><option value="amex">Amex</option></select></label><label>Entrada<input id="modalEntrada" inputmode="decimal" placeholder="Ex: 1000" oninput="renderParcelas()"></label>
       </div>
       <div class="parcel-list" id="parcelList"></div>
     </div>
@@ -212,75 +219,195 @@
 
 <script>
 const whatsapp = '5521981909495';
-const products = [
-  {cat:'Lacrados', title:'iPhone 13 128GB CPO', spec:'Importado • eSIM + chip físico', colors:['Preto'], price:'R$ 3.300,00'},
-  {cat:'Lacrados', title:'iPhone 13 128GB CPO', spec:'Importado • eSIM + chip físico', colors:['Branco'], price:'R$ 3.350,00'},
-  {cat:'Lacrados', title:'iPhone 13 256GB CPO', spec:'Importado • eSIM + chip físico', colors:['Preto','Branco'], price:'R$ 3.500,00'},
-  {cat:'Lacrados', title:'iPhone 13 Pro 128GB CPO', spec:'Importado • eSIM + chip físico', colors:['Branco'], price:'R$ 3.550,00'},
-  {cat:'Lacrados', title:'iPhone 13 Pro Max 128GB CPO', spec:'Importado • eSIM + chip físico', colors:['Preto','Verde'], price:'R$ 3.950,00'},
-  {cat:'Lacrados', title:'iPhone 14 Pro 256GB CPO', spec:'Importado • eSIM', colors:['Roxo','Gold','Silver','Preto'], price:'R$ 4.450,00'},
-  {cat:'Lacrados', title:'iPhone 14 Pro Max 128GB CPO', spec:'Importado • eSIM', colors:['Preto'], price:'R$ 4.750,00'},
-  {cat:'Lacrados', title:'iPhone 15 128GB', spec:'Importado • eSIM + chip físico', colors:['Azul','Preto'], price:'R$ 4.100,00'},
-  {cat:'Lacrados', title:'iPhone 15 128GB', spec:'Importado • eSIM + chip físico', colors:['Rosa'], price:'R$ 4.200,00'},
-  {cat:'Lacrados', title:'iPhone 15 Pro 256GB CPO', spec:'Importado • eSIM', colors:['Azul'], price:'R$ 5.100,00'},
-  {cat:'Lacrados', title:'iPhone 15 Pro Max 256GB CPO', spec:'Importado • eSIM', colors:['Branco','Azul','Natural'], price:'R$ 6.050,00'},
-  {cat:'Lacrados', title:'iPhone 16 128GB', spec:'Importado • eSIM + chip físico', colors:['Azul'], price:'R$ 4.500,00'},
-  {cat:'Lacrados', title:'iPhone 16 128GB', spec:'Importado • eSIM + chip físico', colors:['Branco','Rosa'], price:'R$ 4.650,00'},
-  {cat:'Lacrados', title:'iPhone 16 256GB', spec:'Importado • eSIM + chip físico', colors:['Preto'], price:'R$ 5.000,00'},
-  {cat:'Lacrados', title:'iPhone 16 Plus 256GB', spec:'Importado • eSIM + chip físico', colors:['Preto','Verde'], price:'R$ 5.550,00'},
-  {cat:'Lacrados', title:'iPhone 16 Plus 256GB', spec:'Importado • eSIM + chip físico', colors:['Branco','Rosa'], price:'R$ 5.650,00'},
-  {cat:'Lacrados', title:'iPhone 16 Pro 512GB', spec:'Importado • chip + eSIM', colors:['Branco'], price:'R$ 6.600,00'},
-  {cat:'Lacrados', title:'iPhone 16 Pro Max 256GB CPO', spec:'Importado • chip + eSIM', colors:['Preto','Branco'], price:'R$ 6.850,00'},
-  {cat:'Lacrados', title:'iPhone 16 Pro Max 256GB', spec:'Importado • chip + eSIM', colors:['Desert'], price:'R$ 7.050,00'},
-  {cat:'Lacrados', title:'iPhone 16 Pro Max 512GB CPO', spec:'Importado • chip + eSIM', colors:['Preto','Branco'], price:'R$ 7.400,00'},
-  {cat:'Linha 17', title:'iPhone 17E 256GB', spec:'Importado • eSIM', colors:['Branco','Preto','Rosa'], price:'R$ 4.100,00'},
-  {cat:'Linha 17', title:'iPhone 17 256GB', spec:'Importado • eSIM', colors:['Verde','Preto','Lavanda','Branco'], price:'R$ 5.200,00'},
-  {cat:'Linha 17', title:'iPhone 17 Pro 256GB', spec:'Importado • eSIM', colors:['Laranja'], price:'R$ 7.300,00'},
-  {cat:'Linha 17', title:'iPhone 17 Pro 256GB', spec:'Importado • eSIM', colors:['Azul'], price:'R$ 7.400,00'},
-  {cat:'Linha 17', title:'iPhone 17 Pro 256GB', spec:'Importado • eSIM', colors:['Branco'], price:'R$ 7.500,00'},
-  {cat:'Linha 17', title:'iPhone 17 Pro 512GB', spec:'Importado • eSIM', colors:['Laranja'], price:'R$ 8.700,00'},
-  {cat:'Linha 17', title:'iPhone 17 Pro 512GB', spec:'Importado • eSIM', colors:['Azul'], price:'R$ 8.800,00'},
-  {cat:'Linha 17', title:'iPhone 17 Pro 512GB', spec:'Importado • eSIM', colors:['Branco'], price:'R$ 9.000,00'},
-  {cat:'Linha 17', title:'iPhone 17 Pro Max 256GB', spec:'Importado • eSIM', colors:['Laranja'], price:'R$ 7.700,00'},
-  {cat:'Linha 17', title:'iPhone 17 Pro Max 256GB', spec:'Importado • eSIM', colors:['Silver'], price:'R$ 8.050,00'},
-  {cat:'Linha 17', title:'iPhone 17 Pro Max 256GB', spec:'Importado • chip + eSIM', colors:['Azul'], price:'R$ 8.300,00'},
-  {cat:'Linha 17', title:'iPhone 17 Pro Max 2TB', spec:'Importado • eSIM', colors:['Laranja'], price:'R$ 11.950,00'},
-  {cat:'iPad', title:'iPad 11 128GB', spec:'Importado', colors:['Azul','Silver'], price:'R$ 2.700,00'},
-  {cat:'iPad', title:'iPad Air M4 128GB 11”', spec:'Importado', colors:['Space Gray','Azul'], price:'R$ 4.400,00'},
-  {cat:'Acessórios', title:'AirPods Pro 3ª geração', spec:'Tradutor', colors:['Branco'], price:'R$ 2.000,00'},
-  {cat:'Acessórios', title:'AirPods Max USB-C', spec:'Original importado', colors:['Consultar'], price:'R$ 3.700,00'},
-  {cat:'Acessórios', title:'AirTag Pack 4 unidades', spec:'Original importado', colors:['Consultar'], price:'R$ 1.080,00'},
-  {cat:'Apple Watch', title:'Apple Watch SE 3 40mm', spec:'Importado', colors:['Preto'], price:'R$ 2.200,00'},
-  {cat:'Apple Watch', title:'Apple Watch Series 11 42mm', spec:'Importado', colors:['Preto'], price:'R$ 2.700,00'},
-  {cat:'Apple Watch', title:'Apple Watch Series 11 42mm', spec:'Importado', colors:['Space Gray'], price:'R$ 2.750,00'},
-  {cat:'Apple Watch', title:'Apple Watch Series 11 42mm', spec:'Importado', colors:['Rosa'], price:'R$ 2.800,00'},
-  {cat:'Apple Watch', title:'Apple Watch Series 11 46mm', spec:'Importado', colors:['Space Gray','Rosa'], price:'R$ 2.900,00'},
-  {cat:'MacBook', title:'MacBook NEO 8/256GB 13”', spec:'Importado', colors:['Cítrus'], price:'R$ 5.000,00'},
-  {cat:'MacBook', title:'MacBook NEO 8/256GB 13”', spec:'Importado', colors:['Índigo'], price:'R$ 5.050,00'},
-  {cat:'MacBook', title:'MacBook Air M4 16/256GB 13”', spec:'Importado', colors:['Sky Blue','Silver'], price:'R$ 7.000,00'},
-  {cat:'MacBook', title:'MacBook Air M5 16/512GB 13”', spec:'Importado', colors:['Sky Blue','Preto','Starlight'], price:'R$ 7.600,00'},
-  {cat:'Seminovos', title:'iPhone 12 64GB', spec:'🇺🇸 • Bateria 85% a 100% • Garantia 6 meses', colors:['Lilás','Azul'], price:'R$ 1.950,00'},
-  {cat:'Seminovos', title:'iPhone 12 128GB', spec:'🇺🇸 • Bateria 85% a 100% • Garantia 6 meses', colors:['Lilás','Preto','Azul'], price:'R$ 2.150,00'},
-  {cat:'Seminovos', title:'iPhone 12 Pro 128GB', spec:'🇺🇸 • Bateria 85% a 100% • Garantia 6 meses', colors:['Azul','Grafite','Branco'], price:'R$ 2.399,00'},
-  {cat:'Seminovos', title:'iPhone 13 128GB', spec:'🇺🇸 • Bateria 85% a 100% • Garantia 6 meses', colors:['Azul','Preto'], price:'R$ 2.450,00'},
-  {cat:'Seminovos', title:'iPhone 13 256GB', spec:'🇺🇸 • Bateria 85% a 100% • Garantia 6 meses', colors:['Azul','Rosa'], price:'R$ 2.650,00'},
-  {cat:'Seminovos', title:'iPhone 13 Pro 256GB', spec:'🇺🇸 • Bateria 85% a 100% • Garantia 6 meses', colors:['Verde'], price:'R$ 3.150,00'},
-  {cat:'Seminovos', title:'iPhone 13 Pro 512GB', spec:'🇺🇸 • Bateria 100% • Garantia 6 meses', colors:['Azul'], price:'R$ 3.250,00'},
-  {cat:'Seminovos', title:'iPhone 14 128GB', spec:'🇺🇸 • Bateria 85% a 100% • Garantia 6 meses', colors:['Branco','Preto','Azul','Lilás'], price:'R$ 2.599,00'},
-  {cat:'Seminovos', title:'iPhone 14 256GB', spec:'🇺🇸 • Bateria 85% a 100% • Garantia 6 meses', colors:['Lilás'], price:'R$ 2.850,00'},
-  {cat:'Seminovos', title:'iPhone 14 Plus 128GB', spec:'🇺🇸 • Bateria 84% a 100% • Garantia 6 meses', colors:['Preto','Azul'], price:'R$ 2.799,00'},
-  {cat:'Seminovos', title:'iPhone 14 Plus 256GB', spec:'🇺🇸 • Bateria 85% a 100% • Garantia 6 meses', colors:['Preto'], price:'R$ 2.899,00'},
-  {cat:'Seminovos', title:'iPhone 14 Pro Max 128GB', spec:'🇺🇸 • Bateria 89% • Garantia 6 meses', colors:['Roxo'], price:'R$ 3.799,00'},
-  {cat:'Seminovos', title:'iPhone 15 128GB', spec:'🇺🇸 • Bateria 94% • Garantia 6 meses', colors:['Rosa'], price:'R$ 3.299,00'},
-  {cat:'Seminovos', title:'iPhone 15 Plus 128GB', spec:'🇺🇸 • Bateria 91% • Garantia 6 meses', colors:['Verde'], price:'R$ 3.499,00'},
-  {cat:'Seminovos', title:'iPhone 15 Pro 128GB', spec:'🇺🇸 • Bateria 86% a 100% • Garantia 6 meses', colors:['Preto'], price:'R$ 3.950,00'},
-  {cat:'Seminovos', title:'iPhone 15 Pro Max 512GB', spec:'🇺🇸 • Bateria 90% a 100% • Garantia 6 meses', colors:['Preto'], price:'R$ 4.799,00'},
-  {cat:'Seminovos', title:'iPhone 16 128GB', spec:'Chip físico • Bateria 92% • Garantia 6 meses', colors:['Branco'], price:'R$ 4.199,00'},
-  {cat:'Seminovos', title:'iPhone 16 Plus 128GB', spec:'🇺🇸 • Bateria 90% pra cima • Garantia 6 meses', colors:['Rosa','Preto'], price:'R$ 4.499,00'},
-  {cat:'Seminovos', title:'iPhone 16 Pro 128GB', spec:'🇺🇸 • Bateria 89% pra cima • Garantia 6 meses', colors:['Preto','Desert'], price:'R$ 4.850,00'},
-  {cat:'Seminovos', title:'iPhone 16 Pro Max 256GB', spec:'🇺🇸 • Bateria 90% a 100% • Alguns com AppleCare +R$100 • Garantia 6 meses', colors:['Natural','Desert','Branco'], price:'R$ 5.750,00'},
-  {cat:'Seminovos', title:'iPhone 17 256GB', spec:'🇺🇸 • Bateria 100% • Garantia Apple até 02/27', colors:['Preto'], price:'R$ 4.999,00'}
-];
+
+/*
+  COMO EDITAR A TABELA:
+  1) Cole a tabela nova de LACRADOS dentro de TABELA_LACRADOS, mantendo as crases (`).
+  2) Cole a tabela nova de SEMINOVOS dentro de TABELA_SEMINOVOS, mantendo as crases (`).
+  3) Salve o arquivo e envie novamente para o GitHub Pages.
+  O site lê automaticamente modelo, preço, cores e categoria.
+*/
+const TABELA_LACRADOS = `LACRADOS:
+iPhone
+📍 iPhone 13 128GB CPO Importado eSIM + chip físico preto R$ 3.300,00
+📍 iPhone 13 128GB CPO Importado eSIM + chip físico branco R$ 3.350,00
+📍 iPhone 13 256GB CPO Importado eSIM + chip físico preto / branco R$ 3.500,00
+📍 iPhone 13 Pro 128GB CPO Importado eSIM + chip físico branco R$ 3.550,00
+📍 iPhone 13 Pro Max 128GB CPO Importado eSIM + chip físico preto / verde R$ 3.950,00
+📍 iPhone 14 Pro 256GB CPO Importado eSIM roxo / gold / silver / preto R$ 4.450,00
+📍 iPhone 14 Pro Max 128GB CPO Importado eSIM preto R$ 4.750,00
+📍 iPhone 15 128GB Importado eSIM + chip físico azul / preto R$ 4.100,00
+📍 iPhone 15 128GB Importado eSIM + chip físico rosa R$ 4.200,00
+📍 iPhone 15 Pro 256GB CPO Importado eSIM azul R$ 5.100,00
+📍 iPhone 15 Pro Max 256GB CPO Importado eSIM branco / azul / natural R$ 6.050,00
+📍 iPhone 16 128GB Importado eSIM + chip físico azul R$ 4.500,00
+📍 iPhone 16 128GB Importado eSIM + chip físico branco / rosa R$ 4.650,00
+📍 iPhone 16 256GB Importado eSIM + chip físico preto R$ 5.000,00
+📍 iPhone 16 Plus 256GB Importado eSIM + chip físico preto / verde R$ 5.550,00
+📍 iPhone 16 Plus 256GB Importado eSIM + chip físico branco / rosa R$ 5.650,00
+📍 iPhone 16 Pro 512GB Importado CHIP+ESIM branco R$ 6.600,00
+📍 iPhone 16 Pro Max 256GB CPO Importado CHIP+ESIM preto / branco R$ 6.850,00
+📍 iPhone 16 Pro Max 256GB Importado CHIP+ESIM desert R$ 7.050,00
+📍 iPhone 16 Pro Max 512GB CPO Importado CHIP+ESIM preto / branco R$ 7.400,00
+
+🚨 LINHA 17 🚨
+📍 iPhone 17E 256GB Importado eSIM branco / preto / rosa R$ 4.100,00
+📍 iPhone 17 256GB Importado eSIM verde / preto / lavanda / branco R$ 5.200,00
+📍 iPhone 17 Pro 256GB Importado eSIM laranja R$ 7.300,00
+📍 iPhone 17 Pro 256GB Importado eSIM azul R$ 7.400,00
+📍 iPhone 17 Pro 256GB Importado eSIM branco R$ 7.500,00
+📍 iPhone 17 Pro 512GB Importado eSIM laranja R$ 8.700,00
+📍 iPhone 17 Pro 512GB Importado eSIM azul R$ 8.800,00
+📍 iPhone 17 Pro 512GB Importado eSIM branco R$ 9.000,00
+📍 iPhone 17 Pro Max 256GB Importado eSIM laranja R$ 7.700,00
+📍 iPhone 17 Pro Max 256GB Importado eSIM silver R$ 8.050,00
+📍 iPhone 17 Pro Max 256GB Importado CHIP + eSIM azul R$ 8.300,00
+📍 iPhone 17 Pro Max 2TB Importado eSIM laranja R$ 11.950,00
+
+📱 IPAD
+📱 iPad 11 128GB Importado azul / silver R$ 2.700,00
+📱 iPad Air M4 128GB (11) Importado space gray / azul R$ 4.400,00
+
+🎧 ACESSÓRIOS
+🎧 AirPods Pro 3ª geração - Tradutor R$ 2.000,00
+🎧 AirPods Max USB-C R$ 3.700,00
+📍 AirTag (Pack 4 unid.) R$ 1.080,00
+
+APPLE WATCH
+⌚️ Apple Watch SE 3 40mm preto R$ 2.200,00
+⌚️ Apple Watch Series 11 42mm preto R$ 2.700,00
+⌚️ Apple Watch Series 11 42mm space gray R$ 2.750,00
+⌚️ Apple Watch Series 11 42mm rosa R$ 2.800,00
+⌚️ Apple Watch Series 11 46mm space gray / rosa R$ 2.900,00
+
+💻 MACBOOK
+💻 MacBook NEO 8/256GB (13) cítrus R$ 5.000,00
+💻 MacBook NEO 8/256GB (13) índigo R$ 5.050,00
+💻 MacBook Air M4 16/256GB (13) SKY Blue / silver R$ 7.000,00
+💻 MacBook Air M5 16/512GB (13) SKY Blue / preto / starlight R$ 7.600,00`;
+
+const TABELA_SEMINOVOS = `SEMINOVOS:
+
+📱12 64gb 🇺🇸
+🔋85% ha 100%
+💰1.950,00
+💜 Lilas
+💙 Azul
+————————————————————
+📱12 128gb 🇺🇸
+🔋85% ha 100%
+💰2.150,00
+💜 Lilas
+🖤 Preto
+💙 Azul
+————————————————————
+📱12 Pro 128gb 🇺🇸
+🔋85% ha 100%
+💰2.399,00
+💙 Azul
+🩶 Grafite
+🤍 Branco
+————————————————————
+📱13 128gb 🇺🇸
+🔋85% ha 100%
+💰2.450,00
+💙 Azul
+🖤 Preto
+————————————————————
+📱13 256gb 🇺🇸
+🔋85% ha 100%
+💰2.650,00
+💙 Azul
+🩷 Rosa
+————————————————————
+📱13 Pro 256gb 🇺🇸
+🔋85% ha 100%
+💰3.150,00
+💚 Verde
+————————————————————
+📱13 Pro 512gb 🇺🇸
+🔋100%
+💰3.250,00
+🩵 Azul
+————————————————————
+📱14 128gb 🇺🇸
+🔋85% ha 100%
+💰2.599,00
+🤍 Branco
+🖤 Preto
+🩵 Azul
+💜 Lilas
+————————————————————
+📱14 256gb 🇺🇸
+🔋85% ha 100%
+💰2.850,00
+💜 Lilas
+————————————————————
+📱14 Plus 128gb 🇺🇸
+🔋84% ha 100%
+💰2.799,00
+🖤 Preto
+🩵 Azul
+————————————————————
+📱14 Plus 256gb 🇺🇸
+🔋85% ha 100%
+💰2.899,00
+🖤 Preto
+————————————————————
+📱14 Pro Max 128gb 🇺🇸
+🔋89%
+💰3.799,00
+💜 Roxo
+————————————————————
+📱15 128gb 🇺🇸
+🔋94%
+💰3.299,00
+🩷 Rosa
+————————————————————
+📱15 Plus 128gb 🇺🇸
+🔋91%
+💰3.499,00
+💚 Verde
+————————————————————
+📱15 Pro 128gb 🇺🇸
+🔋86% ha 100%
+💰3.950,00
+🖤 Preto
+————————————————————
+📱15 Pro Max 512gb 🇺🇸
+🔋90% ha 100%
+💰4.799,00
+🖤 Preto
+————————————————————
+📱16 128gb Branco Chip Fisico
+🔋92%
+💰4.199,00
+🤍 Branco
+————————————————————
+📱16 Plus 128bgb 🇺🇸
+🔋90% pra cima
+💰4.499,00
+🩷 Rosa
+🖤 Preto
+————————————————————
+📱16 Pro 128gb 🇺🇸
+💰4.850,00
+🔋89% pra cima
+🖤 Preto
+🧡 Desert
+————————————————————
+📱16 Pro Max 256gb 🇺🇸
+🔋90% ha 100%
+💰5.750,00 - alguns com apple care 100 a mais ✅
+🩶 Natural
+🧡 Desert
+🤍 Branco
+————————————————————
+📱17 256gb 🇺🇸
+🔋100%
+💰4.999,00
+🖤 Preto - garantia apple 02/27`;
+
 const fees = {
   visa: {1:3.59,2:4.73,3:5.41,4:6.10,5:6.78,6:7.4588191745,7:7.56,8:8.25,9:8.94,10:9.6187554777,11:10.31,12:11.0003559986,13:11.69,14:12.38,15:13.06,16:13.75,17:14.44,18:15.13},
   elo: {1:4.60,2:5.57,3:6.25,4:6.93,5:7.60,6:8.28,7:9.40,8:10.08,9:10.75,10:11.42,11:12.10,12:12.77,13:13.45,14:14.12,15:14.79,16:15.47,17:16.14,18:16.82},
@@ -295,20 +422,85 @@ const searchEl = document.getElementById('search');
 const emptyEl = document.getElementById('empty');
 const chipsEl = document.getElementById('chips');
 
-function brlToNumber(v){ return Number(String(v).replace('R$','').replace(/\./g,'').replace(',','.').trim()); }
-function formatBRL(n){ return n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
+function brlToNumber(v){ return Number(String(v).replace('R$','').replace(/[^0-9,]/g,'').replace(',','.')) || 0; }
+function formatBRL(n){ return (Number(n)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
 function calcWithFee(price, fee){ return price/(1-fee/100); }
-function installmentLine(price, n, brand='visa'){ const total = calcWithFee(price, fees[brand][n]); return `${n}x ${formatBRL(total/n)}`; }
-function installmentTotal(price, n, brand='visa'){ return formatBRL(calcWithFee(price, fees[brand][n])); }
+function normalize(t){ return String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+function slug(t){ return normalize(t).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
+function cleanEmoji(t){ return String(t).replace(/[📍📱🎧⌚💻💰🔋💜💙🖤🩶🤍💚🩵🩷🧡✅🚨]/g,'').replace(/🇺🇸/g,'').replace(/—+/g,'').trim(); }
+function titleCaseColor(c){ return String(c).trim().replace(/\s+/g,' ').replace(/\b\w/g, m => m.toUpperCase()).replace('Esim','eSIM').replace('Citrus','Cítrus').replace('Indigo','Índigo'); }
+function detectCategory(line, current){
+  const n = normalize(line);
+  if(n.includes('linha 17')) return 'Linha 17';
+  if(n.includes('ipad')) return 'iPad';
+  if(n.includes('acessorios')) return 'Acessórios';
+  if(n.includes('apple watch')) return 'Apple Watch';
+  if(n.includes('macbook')) return 'MacBook';
+  if(n.includes('lacrados') || n === 'iphone') return current || 'Lacrados';
+  return current;
+}
+function parseLacrados(text){
+  const out = []; let cat = 'Lacrados';
+  text.split(/\n+/).forEach(raw => {
+    let line = raw.trim(); if(!line) return;
+    const maybeCat = detectCategory(line, cat); if(maybeCat !== cat || !/(R\$|\d+[.,]\d{2})/.test(line)) { cat = maybeCat; }
+    if(!/(R\$\s*[\d.]+,\d{2})/.test(line)) return;
+    let priceMatch = line.match(/R\$\s*[\d.]+,\d{2}/); if(!priceMatch) return;
+    const price = priceMatch[0].replace(/\s+/g,' ');
+    let before = cleanEmoji(line.slice(0, priceMatch.index));
+    let title = before, spec = 'Importado', colors = ['Consultar'];
+    const cap = before.match(/^(.*?\b(?:\d+\s?(?:GB|TB)|\d+\/\d+GB)(?:\s*\(\d+\))?)/i);
+    if(cap) {
+      title = cap[1].replace(/\s+/g,' ').trim();
+      let rest = before.slice(cap[1].length).trim();
+      const colorWords = ['space gray','sky blue','starlight','preto','branco','rosa','azul','verde','roxo','gold','silver','natural','desert','laranja','lavanda','citrus','cítrus','indigo','índigo'];
+      let foundAt = -1;
+      const restN = normalize(rest);
+      colorWords.forEach(c => { const pos = restN.indexOf(normalize(c)); if(pos >= 0 && (foundAt < 0 || pos < foundAt)) foundAt = pos; });
+      if(foundAt >= 0) {
+        spec = rest.slice(0, foundAt).replace(/\s+/g,' ').trim() || 'Importado';
+        colors = rest.slice(foundAt).split('/').map(titleCaseColor).filter(Boolean);
+      } else { spec = rest || 'Importado'; }
+    }
+    if(/airpods|airtag/i.test(title)) { cat = 'Acessórios'; colors = ['Consultar']; spec = before.replace(title,'').trim() || 'Original importado'; }
+    out.push({cat, title, spec, colors, price});
+  });
+  return out;
+}
+function parseSeminovos(text){
+  const blocks = text.split(/—{3,}/).map(b => b.trim()).filter(b => /💰|\n\s*\d/.test(b));
+  const out = [];
+  blocks.forEach(block => {
+    const lines = block.split(/\n+/).map(l => l.trim()).filter(Boolean);
+    const titleLine = lines.find(l => /📱/.test(l)) || lines[0];
+    const batLine = lines.find(l => /🔋/.test(l)) || '';
+    const priceLine = lines.find(l => /💰/.test(l)) || '';
+    const pm = priceLine.match(/[\d.]+,\d{2}/); if(!pm) return;
+    let title = cleanEmoji(titleLine).replace(/\s+/g,' ').trim();
+    if(!/^iphone/i.test(title)) title = 'iPhone ' + title;
+    title = title.replace(/gb/ig,'GB').replace(/bGB/ig,'GB').replace(/Chip Fisico/i,'').trim();
+    const colors = lines.filter(l => !/📱|🔋|💰/.test(l)).map(l => cleanEmoji(l).replace(/-.*$/,'').trim()).filter(Boolean).map(titleCaseColor);
+    const obs = priceLine.replace(/.*?,\d{2}\s*/,'').replace(/^[-–]\s*/,'').trim();
+    const bateria = cleanEmoji(batLine).replace(/ha/g,'a').trim();
+    let specParts = [];
+    if(/🇺🇸/.test(titleLine)) specParts.push('🇺🇸');
+    if(/chip fisico/i.test(titleLine)) specParts.push('Chip físico');
+    if(bateria) specParts.push('Bateria ' + bateria);
+    if(obs) specParts.push(obs);
+    specParts.push('Garantia 6 meses');
+    out.push({cat:'Seminovos', title, spec:specParts.join(' • '), colors:colors.length?colors:['Consultar'], price:'R$ '+pm[0]});
+  });
+  return out;
+}
+const products = [...parseLacrados(TABELA_LACRADOS), ...parseSeminovos(TABELA_SEMINOVOS)];
 function previewInstallments(price){ return [6,10,12].map(n=>{ const total = calcWithFee(price, fees.visa[n]); return `<span><b>${n}x ${formatBRL(total/n)}</b><small>Total ${formatBRL(total)}</small></span>`; }).join(''); }
 function waLink(p){
   const msg = `Olá, vim pelo catálogo do site e tenho interesse no ${p.title} ${p.colors.join('/')} por ${p.price}. Ainda está disponível?`;
-  return `https://wa.me/${whatsapp}?text=${encodeURIComponent(msg)}`;
+  return `https://wa.me/${whatsapp}?text=${encodeURIComponent(msg.replace(/[\uD800-\uDFFF]/g,''))}`;
 }
-function normalize(t){ return String(t).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,''); }
-function slug(t){ return normalize(t).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
 function renderChips(){ chipsEl.innerHTML = categories.map(c => `<button data-cat="${c}" class="chip ${c===activeCat?'active':''}" onclick="setCat('${c}')">${c}</button>`).join(''); }
 function setCat(c){ activeCat=c; renderChips(); renderProducts(); }
+function entradaCalcHtml(index){ return `<div class="entry-calc"><div class="entry-calc-title">Calcule com entrada</div><div class="entry-row"><input type="text" inputmode="decimal" placeholder="Entrada à vista" oninput="updateEntryCalc(${index})"><select onchange="updateEntryCalc(${index})"><option value="6">6x</option><option value="10">10x</option><option value="12" selected>12x</option><option value="18">18x</option></select></div><div class="entry-result">Digite uma entrada para calcular o restante.</div></div>`; }
 function renderProducts(){
   const q = normalize(searchEl.value);
   const filtered = products.filter(p => {
@@ -317,32 +509,46 @@ function renderProducts(){
     return catOk && hay.includes(q);
   });
   emptyEl.style.display = filtered.length ? 'none' : 'block';
-  productsEl.innerHTML = filtered.map((p,i) => {
+  productsEl.innerHTML = filtered.map((p) => {
+    const globalIndex = products.indexOf(p);
     const priceNum = brlToNumber(p.price);
-    return `<article class="card ${slug(p.cat)}">
+    return `<article class="card ${slug(p.cat)}" data-product-index="${globalIndex}">
       <span class="tag">${p.cat}</span>
       <h3 class="product-title">${p.title}</h3>
       <div class="spec">${p.spec}</div>
       <div class="colors">${p.colors.map(c=>`<span class="color-pill">${c}</span>`).join('')}</div>
       <div class="price">${p.price}</div>
       <div class="installment-preview">${previewInstallments(priceNum)}</div>
+      ${entradaCalcHtml(globalIndex)}
       <div class="note">${p.cat === 'Seminovos' ? 'Seminovo com garantia de 6 meses + brindes exclusivos.' : 'Lacrado/importado com garantia de 1 ano.'}</div>
-      <div class="card-actions"><button class="btn btn-parcel" onclick="showParcel(${products.indexOf(p)})">Parcelar</button><a class="btn btn-whats" href="${waLink(p)}" target="_blank">Tenho interesse</a></div>
+      <div class="card-actions"><button class="btn btn-parcel" onclick="showParcel(${globalIndex})">Ver 1x a 18x</button><a class="btn btn-whats" href="${waLink(p)}" target="_blank">Tenho interesse</a></div>
     </article>`;
   }).join('');
 }
+function updateEntryCalc(index){
+  const card = document.querySelector(`.card[data-product-index="${index}"]`); if(!card) return;
+  const p = products[index]; const price = brlToNumber(p.price);
+  const input = card.querySelector('.entry-row input'); const select = card.querySelector('.entry-row select'); const result = card.querySelector('.entry-result');
+  const entrada = Math.max(0, brlToNumber(input.value)); const n = Number(select.value || 12);
+  const restante = Math.max(0, price - entrada);
+  if(!entrada) { result.innerHTML = 'Digite uma entrada para calcular o restante.'; return; }
+  const totalCartao = calcWithFee(restante, fees.visa[n]);
+  result.innerHTML = `Entrada: <b>${formatBRL(Math.min(entrada, price))}</b><br>Restante no cartão: <b>${n}x ${formatBRL(totalCartao/n)}</b><br>Total final: <b>${formatBRL(Math.min(entrada, price) + totalCartao)}</b>`;
+}
 function clearSearch(){ searchEl.value=''; searchEl.focus(); renderProducts(); }
 function renderFeeTable(){}
-function showParcel(index){ currentProduct = products[index]; document.getElementById('modalTitle').textContent = currentProduct.title; document.getElementById('modalPrice').textContent = `Preço à vista: ${currentProduct.price}`; document.getElementById('parcelModal').classList.add('open'); renderParcelas(); }
+function showParcel(index){ currentProduct = products[index]; document.getElementById('modalTitle').textContent = currentProduct.title; document.getElementById('modalPrice').textContent = `Preço à vista: ${currentProduct.price}`; document.getElementById('modalEntrada').value=''; document.getElementById('parcelModal').classList.add('open'); renderParcelas(); }
 function hideParcel(){ document.getElementById('parcelModal').classList.remove('open'); }
 function closeParcel(e){ if(e.target.id === 'parcelModal') hideParcel(); }
 function renderParcelas(){
   if(!currentProduct) return;
   const brand = document.getElementById('brandSelect').value;
   const price = brlToNumber(currentProduct.price);
+  const entrada = Math.min(Math.max(0, brlToNumber(document.getElementById('modalEntrada').value)), price);
+  const restante = Math.max(0, price - entrada);
   const rows = Array.from({length:18},(_,i)=>i+1).map(n=>{
-    const fee = fees[brand][n]; const total = calcWithFee(price, fee); const parcela = total/n;
-    return `<div class="parcel-item"><b>${n}x</b><span>Total ${formatBRL(total)}</span><strong>${formatBRL(parcela)}</strong></div>`;
+    const totalCartao = calcWithFee(restante, fees[brand][n]); const parcela = totalCartao/n; const finalTotal = entrada + totalCartao;
+    return `<div class="parcel-item"><b>${n}x</b><span>${entrada ? 'Com entrada de '+formatBRL(entrada)+' • ' : ''}Total ${formatBRL(finalTotal)}</span><strong>${formatBRL(parcela)}</strong></div>`;
   }).join('');
   document.getElementById('parcelList').innerHTML = rows;
 }
